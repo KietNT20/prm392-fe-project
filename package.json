@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "expo/AppEntry.js",
   "scripts": {
-    "start": "npm run format && expo start",
+    "start": "expo start",
     "format": "npx prettier . --write",
     "android": "expo start --android",
     "ios": "expo start --ios",
