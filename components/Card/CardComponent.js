@@ -1,8 +1,6 @@
-import { View, Text } from 'react-native';
-import React from 'react';
-import { Card } from '@rneui/base';
+import { Text } from 'react-native';
 
-const CardComponent = ({img,}) => {
+const CardComponent = ({ image_id }) => {
   return (
     <Card>
       <Card.Title>HELLO WORLD</Card.Title>
@@ -10,7 +8,7 @@ const CardComponent = ({img,}) => {
       <Card.Image
         style={{ padding: 0 }}
         source={{
-          uri: img,
+          uri: { image_id },
         }}
       />
       <Text style={{ marginBottom: 10 }}>

@@ -1,4 +1,4 @@
-export const PATH = {
+export const SCREEN = {
   HOME: 'Home',
   DETAIL: 'Detail',
   NOTIFICATION: 'Notification',

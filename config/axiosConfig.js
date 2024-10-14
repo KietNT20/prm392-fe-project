@@ -1,7 +1,7 @@
 import { API } from 'api/apiUrl';
 import axios from 'axios';
-import { BASE_URL } from '../config/environment';
-import storageMethod from './storageMethod';
+import { BASE_URL } from '../utils/environment';
+import storageMethod from '../utils/storageMethod';
 
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
