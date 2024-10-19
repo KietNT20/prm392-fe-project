@@ -1,11 +1,13 @@
-import React, { useEffect, useRef } from "react";
-import { View, Animated } from "react-native";
-import { Text } from "react-native-elements";
-import { Ionicons } from "@expo/vector-icons";
-import { styled } from "nativewind";
+import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { styled } from 'nativewind';
+import { useEffect, useRef } from 'react';
+import { Animated, View } from 'react-native';
+import { Text } from 'react-native-elements';
 
-const SplashScreen = ({ navigation }) => {
+const SplashScreen = () => {
   const fadeAnim = useRef(new Animated.Value(0)).current; // Initial opacity: 0
+  const navigation = useNavigation();
 
   useEffect(() => {
     // Start the animation
@@ -16,7 +18,7 @@ const SplashScreen = ({ navigation }) => {
     }).start(() => {
       // Navigate to the next screen once animation completes
       setTimeout(() => {
-        navigation.replace("Login"); // Replace 'Login' with your target screen
+        navigation.navigate('login'); // Replace 'Login' with your target screen
       }, 1000); // Delay to hold the splash screen
     });
   }, [fadeAnim, navigation]);
