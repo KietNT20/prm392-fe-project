@@ -3,9 +3,6 @@ import { View, Text, ImageBackground, Alert, ScrollView } from 'react-native';
 import { Input, Button } from 'react-native-elements';
 import { TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-
-import storageMethod from '../../utils/storageMethod'; // Local storage management
-import { authServices } from 'services/authServices';
 import { useLogin } from 'hooks/useAuth';
 
 const LoginScreen = ({ navigation }) => {

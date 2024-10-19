@@ -1,49 +1,64 @@
 import React, { useState } from 'react';
-import { View, Text, ImageBackground } from 'react-native';
+import { View, Text, ImageBackground, Alert } from 'react-native';
 import { Input, Button } from 'react-native-elements';
 import { TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { styled } from 'nativewind';
+import { useRegister } from 'hooks/useAuth';
 
 const RegisterScreen = ({ navigation }) => {
   const [username, setUsername] = useState('');
-  const [phone, setPhone] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [email, setEmail] = useState('');
+  const [address, setAddress] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const { registerUser, isLoading } = useRegister();
 
   const handleRegister = () => {
-    // Handle registration logic here
+    // Validate inputs
+    if (
+      !username ||
+      !phoneNumber ||
+      !email ||
+      !password ||
+      !confirmPassword ||
+      !address
+    ) {
+      return Alert.alert('Error', 'All fields are required.');
+    }
+    if (password !== confirmPassword) {
+      return Alert.alert('Error', 'Passwords do not match.');
+    }
+
+    // Prepare payload and trigger registration
+    const payload = { username, email, password, address, phoneNumber };
+    registerUser(payload); // Call the mutation from the hook
   };
 
-  const BackgroundImage = styled(ImageBackground);
-  const StyledView = styled(View);
-  const StyledText = styled(Text);
-  const StyledButton = styled(Button);
-
   return (
-    <BackgroundImage
+    <ImageBackground
       source={require('../../assets/pngegg.png')}
       className="flex-1 justify-center"
       resizeMode="cover"
     >
-      <StyledView className="bg-black/50 px-5 py-10 justify-center items-center">
-        <StyledText className="text-2xl font-bold text-center mb-2 text-white">
+      <View className="bg-black/50 px-5 py-10 justify-center items-center">
+        <Text className="text-2xl font-bold text-center mb-2 text-white">
           Join PawFund!
-        </StyledText>
-        <StyledText className="text-base text-center mb-5 text-gray-300">
+        </Text>
+        <Text className="text-base text-center mb-5 text-gray-300">
           Create an account to adopt and support pets in need
-        </StyledText>
+        </Text>
 
         <Input
-          placeholder="User name"
+          placeholder="Username"
           value={username}
           onChangeText={setUsername}
           placeholderTextColor="#ddd"
           inputStyle={{ color: '#fff' }}
           leftIcon={
             <Ionicons
-              name="mail-outline"
+              name="person-outline"
               size={24}
               color="#ddd"
               style={{ marginLeft: 10, marginRight: 10 }}
@@ -76,14 +91,34 @@ const RegisterScreen = ({ navigation }) => {
           }}
         />
         <Input
-          placeholder="Phone"
-          value={phone}
-          onChangeText={setPhone}
+          placeholder="Phone Number"
+          value={phoneNumber}
+          onChangeText={setPhoneNumber}
           placeholderTextColor="#ddd"
           inputStyle={{ color: '#fff' }}
           leftIcon={
             <Ionicons
-              name="mail-outline"
+              name="call-outline"
+              size={24}
+              color="#ddd"
+              style={{ marginLeft: 10, marginRight: 10 }}
+            />
+          }
+          containerStyle={{ marginBottom: 2 }}
+          inputContainerStyle={{
+            backgroundColor: 'rgba(255, 255, 255, 0.2)',
+            borderRadius: 8,
+          }}
+        />
+        <Input
+          placeholder="Address"
+          value={address}
+          onChangeText={setAddress}
+          placeholderTextColor="#ddd"
+          inputStyle={{ color: '#fff' }}
+          leftIcon={
+            <Ionicons
+              name="location-outline"
               size={24}
               color="#ddd"
               style={{ marginLeft: 10, marginRight: 10 }}
@@ -138,9 +173,10 @@ const RegisterScreen = ({ navigation }) => {
           }}
         />
 
-        <StyledButton
+        <Button
           title="Register"
           onPress={handleRegister}
+          loading={isLoading}
           buttonStyle={{
             backgroundColor: '#6c63ff',
             borderRadius: 8,
@@ -152,12 +188,12 @@ const RegisterScreen = ({ navigation }) => {
         />
 
         <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-          <StyledText className="text-center text-indigo-500 mt-5 text-sm">
+          <Text className="text-center text-indigo-500 mt-5 text-sm">
             Already have an account? Log in here
-          </StyledText>
+          </Text>
         </TouchableOpacity>
-      </StyledView>
-    </BackgroundImage>
+      </View>
+    </ImageBackground>
   );
 };
 
