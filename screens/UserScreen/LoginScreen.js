@@ -15,38 +15,6 @@ const LoginScreen = ({ navigation }) => {
     doLoginUser({ identifier: email, password: password });
   };
 
-  // const handleLogin = async () => {
-  //   if (!email || !password) {
-  //     Alert.alert('Error', 'Please fill in all fields');
-  //     return;
-  //   }
-
-  //   setLoading(true);
-
-  //   try {
-  //     const response = await authServices.loginUser({
-  //       identifier: email,
-  //       password: password,
-  //     });
-
-  //     // Log the full response to see where the token is located
-  //     console.log('Full Response:', response);
-
-  //     if (token) {
-  //       storageMethod.set({ access_token: response?.token });
-  //       setLoading(false);
-  //       navigation.navigate('Home'); // Navigate to HomeScreen
-  //     } else {
-  //       setLoading(false);
-  //       Alert.alert('Error', 'Login failed. Token not received.');
-  //     }
-  //   } catch (error) {
-  //     setLoading(false);
-  //     console.log('Full Error:', error);
-  //     Alert.alert('Error', 'An error occurred. Please try again later.');
-  //   }
-  // };
-
   return (
     <ImageBackground
       source={require('../../assets/pngegg.png')}
