@@ -1,13 +1,17 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import LoginScreen from './screens/LoginScreen/LoginScreen';
-import RegisterScreen from './screens/RegisterScreen/RegisterScreen';
+import LoginScreen from './screens/UserScreen/LoginScreen';
+import RegisterScreen from './screens/UserScreen/RegisterScreen';
 
 import SplashScreen from 'screens/SplashScreen/SplashScreen';
 import HomeScreen from 'screens/HomeScreen/HomeScreen';
 import DonationScreen from 'screens/DonateScreen/DonateScreen';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import EventsScreen from 'screens/EventsScreen/EventsScreen';
+import EventDetail from 'screens/EventDetail/EventDetail';
+import PetListingsScreen from 'screens/Pet/PetList';
+import PetDetailScreen from 'screens/Pet/PetDetail';
 
 const Stack = createStackNavigator();
 // Create a client
@@ -43,6 +47,12 @@ export default function App() {
             component={DonationScreen} // Add HomeScreen to the navigator
             options={{ headerShown: false }}
           />
+          <Stack.Screen
+            name="Events"
+            component={EventsScreen} // Add HomeScreen to the navigator
+          />
+          <Stack.Screen name="PetListings" component={PetListingsScreen} />
+          <Stack.Screen name="PetDetail" component={PetDetailScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </QueryClientProvider>
