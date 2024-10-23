@@ -18,7 +18,7 @@ const SplashScreen = () => {
     }).start(() => {
       // Navigate to the next screen once animation completes
       setTimeout(() => {
-        navigation.navigate('login'); // Replace 'Login' with your target screen
+        navigation.navigate('Login'); // Replace 'Login' with your target screen
       }, 1000); // Delay to hold the splash screen
     });
   }, [fadeAnim, navigation]);
