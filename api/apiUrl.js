@@ -3,5 +3,8 @@ export const API = {
   REFRESH_TOKEN: 'auth/refresh',
   REGISTER: 'auth/register',
   CART_PETS: 'cart-pets',
-  CART_PETS: 'cart-pets/{id}',
+  PETS: 'pets/all',
+  PET_DETAIL: 'pets/',
+  ADD_PET: 'pets/add',
+  MEDIA: 'media',
 };
