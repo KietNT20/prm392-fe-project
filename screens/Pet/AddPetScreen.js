@@ -7,83 +7,91 @@ import {
   ScrollView,
   Image,
   Alert,
-  StyleSheet,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { petServices } from '@/services/petService';
-import * as ImagePicker from 'expo-image-picker'; // Use expo-image-picker
+
+import * as ImagePicker from 'expo-image-picker';
+import { useAddPet, useUploadImage } from '@/hooks/Pet';
 
 const AddPetScreen = () => {
   const navigation = useNavigation();
   const [petName, setPetName] = useState('');
   const [petBreed, setPetBreed] = useState('');
   const [petAge, setPetAge] = useState('');
+  const [petSex, setPetSex] = useState('');
+  const [petSpecies, setPetSpecies] = useState('');
+  const [coatColor, setCoatColor] = useState('');
+  const [healthStatus, setHealthStatus] = useState('');
+  const [vaccinated, setVaccinated] = useState(false);
+  const [description, setDescription] = useState('');
   const [file, setFile] = useState(null);
   const [error, setError] = useState(null);
 
-  // Function to pick an image from the device's media library
+  // Use mutations for image upload and adding pet
+  const { mutateAsync: uploadImage } = useUploadImage();
+  const { mutateAsync: addPet } = useAddPet();
+
+  // Image picker function
   const handleSelectImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-
     if (status !== 'granted') {
       Alert.alert(
         'Permission Denied',
-        'Sorry, we need camera roll permission to upload images.',
+        'Camera roll permission is needed to upload images.',
       );
     } else {
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         quality: 1,
       });
-
       if (!result.cancelled) {
         setFile(result.uri);
-        setError(null); // Clear any previous error
+        setError(null);
       } else {
         setError('Image selection was cancelled.');
       }
     }
   };
 
-  // Handle image upload to media API
-  const handleUploadImage = async () => {
-    if (!file) {
-      Alert.alert('No image selected', 'Please select an image first.');
-      return null;
-    }
-
-    const formData = new FormData();
-    formData.append('file', {
-      uri: file,
-      name: `image_${Date.now()}.jpg`, // Assign a default name if missing
-      type: 'image/jpeg',
-    });
-
-    try {
-      const uploadResponse = await petServices.media(formData); // Upload image to API
-      return uploadResponse?.data?.url; // Return the uploaded image URL
-    } catch (error) {
-      console.error('Error uploading image:', error);
-      Alert.alert('Image upload failed', 'Please try again.');
-      return null;
-    }
-  };
-
+  // Function to handle image upload and pet submission
   const handleAddPet = async () => {
     try {
-      const uploadedImageUrl = await handleUploadImage(); // Upload image first
-      if (!uploadedImageUrl) return; // Ensure the image was uploaded before proceeding
+      if (!file) {
+        Alert.alert('No image selected', 'Please select an image first.');
+        return;
+      }
 
+      // Prepare image for upload
+      const formData = new FormData();
+      formData.append('file', {
+        uri: file,
+        name: `image_${Date.now()}.jpg`,
+        type: 'image/jpeg',
+      });
+
+      // Upload the image
+      const uploadResponse = await uploadImage(formData);
+      const uploadedImageId = uploadResponse?.data?.image_id;
+      if (!uploadedImageId) return;
+
+      // Prepare new pet data
       const newPet = {
         name: petName,
         breed: petBreed,
-        age: petAge,
-        image: uploadedImageUrl, // Set uploaded image URL
+        age: parseInt(petAge),
+        sex: petSex,
+        species: petSpecies,
+        coatColor: coatColor,
+        vaccinated: vaccinated,
+        healthStatus: healthStatus,
+        description: description,
+        image_id: uploadedImageId, // Use uploaded image ID
       };
 
-      await petServices.addPet(newPet); // Add the pet to the backend
+      // Add the pet
+      await addPet(newPet);
       Alert.alert('Success', 'Pet added successfully!');
-      navigation.goBack(); // Go back after adding the pet
+      navigation.goBack(); // Navigate back after successful addition
     } catch (error) {
       console.error('Error adding pet:', error);
       Alert.alert('Failed to add pet', 'Please try again.');
@@ -91,95 +99,99 @@ const AddPetScreen = () => {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.header}>Add a New Pet</Text>
-
-      <Text style={styles.label}>Pet Name</Text>
+    <ScrollView className="flex-grow p-5 bg-white">
+      {/* Form fields */}
       <TextInput
-        style={styles.input}
+        className="border border-gray-300 rounded-lg p-3 mb-5"
         placeholder="Enter pet name"
         value={petName}
         onChangeText={setPetName}
       />
 
-      <Text style={styles.label}>Breed</Text>
+      <Text className="text-lg text-gray-700 mb-2">Breed</Text>
       <TextInput
-        style={styles.input}
+        className="border border-gray-300 rounded-lg p-3 mb-5"
         placeholder="Enter pet breed"
         value={petBreed}
         onChangeText={setPetBreed}
       />
 
-      <Text style={styles.label}>Age</Text>
+      <Text className="text-lg text-gray-700 mb-2">Age</Text>
       <TextInput
-        style={styles.input}
+        className="border border-gray-300 rounded-lg p-3 mb-5"
         placeholder="Enter pet age"
         value={petAge}
         onChangeText={setPetAge}
         keyboardType="numeric"
       />
 
-      {file && <Image source={{ uri: file }} style={styles.image} />}
+      <Text className="text-lg text-gray-700 mb-2">Sex</Text>
+      <TextInput
+        className="border border-gray-300 rounded-lg p-3 mb-5"
+        placeholder="Enter pet sex"
+        value={petSex}
+        onChangeText={setPetSex}
+      />
 
-      <TouchableOpacity style={styles.button} onPress={handleSelectImage}>
-        <Text style={styles.buttonText}>Select Pet Image</Text>
+      <Text className="text-lg text-gray-700 mb-2">Species</Text>
+      <TextInput
+        className="border border-gray-300 rounded-lg p-3 mb-5"
+        placeholder="Enter pet species"
+        value={petSpecies}
+        onChangeText={setPetSpecies}
+      />
+
+      <Text className="text-lg text-gray-700 mb-2">Coat Color</Text>
+      <TextInput
+        className="border border-gray-300 rounded-lg p-3 mb-5"
+        placeholder="Enter coat color"
+        value={coatColor}
+        onChangeText={setCoatColor}
+      />
+
+      <Text className="text-lg text-gray-700 mb-2">Health Status</Text>
+      <TextInput
+        className="border border-gray-300 rounded-lg p-3 mb-5"
+        placeholder="Enter health status"
+        value={healthStatus}
+        onChangeText={setHealthStatus}
+      />
+
+      <Text className="text-lg text-gray-700 mb-2">Description</Text>
+      <TextInput
+        className="border border-gray-300 rounded-lg p-3 mb-5"
+        placeholder="Enter description"
+        value={description}
+        onChangeText={setDescription}
+        multiline
+      />
+
+      {/* Image Upload */}
+      {file && (
+        <Image source={{ uri: file }} className="w-full h-52 rounded-lg mb-5" />
+      )}
+      <TouchableOpacity
+        className="bg-indigo-600 rounded-lg p-4 mb-5"
+        onPress={handleSelectImage}
+      >
+        <Text className="text-white font-bold text-lg text-center">
+          Select Pet Image
+        </Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.button} onPress={handleAddPet}>
-        <Text style={styles.buttonText}>Add Pet</Text>
+      {/* Submit */}
+      <TouchableOpacity
+        className="bg-indigo-600 rounded-lg p-4 mb-8"
+        onPress={handleAddPet}
+      >
+        <Text className="text-white font-bold text-lg text-center">
+          Add Pet
+        </Text>
       </TouchableOpacity>
 
-      {error && <Text style={styles.errorText}>{error}</Text>}
+      {error && <Text className="text-red-500 mt-5">{error}</Text>}
     </ScrollView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    padding: 20,
-    backgroundColor: 'white',
-  },
-  header: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#4F46E5',
-    marginBottom: 20,
-  },
-  label: {
-    fontSize: 16,
-    color: '#374151',
-    marginBottom: 10,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#D1D5DB',
-    borderRadius: 10,
-    padding: 10,
-    marginBottom: 20,
-  },
-  button: {
-    backgroundColor: '#4F46E5',
-    borderRadius: 10,
-    paddingVertical: 15,
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  image: {
-    width: '100%',
-    height: 200,
-    marginBottom: 20,
-    borderRadius: 10,
-  },
-  errorText: {
-    color: 'red',
-    marginTop: 10,
-  },
-});
 
 export default AddPetScreen;

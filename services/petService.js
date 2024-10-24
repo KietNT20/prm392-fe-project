@@ -11,6 +11,9 @@ export const petServices = {
   addPet() {
     return axiosInstance.post(API.PETS);
   },
+  updatePet(id, updatedPetData) {
+    return axiosInstance.put(`${API.PET_UPDATE}${id}`, updatedPetData);
+  },
   media() {
     return axiosInstance.post(API.MEDIA);
   },

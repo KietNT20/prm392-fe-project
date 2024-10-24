@@ -39,7 +39,12 @@ const PetListingScreen = () => {
       } // Use index as fallback if id is missing
       renderItem={({ item }) => (
         <TouchableOpacity
-          onPress={() => navigation.navigate('PetDetail', { petId: item._id })} // Pass pet._id
+          onPress={() =>
+            navigation.navigate('PetDetail', {
+              petId: item._id,
+              imageUrl: item.image.url, // Pass the image URL to the detail screen
+            })
+          }
           className="bg-white shadow-md rounded-lg p-4 m-2 flex flex-row items-center"
         >
           <Image
