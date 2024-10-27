@@ -29,10 +29,13 @@ export const localMemory = {
 
 const storageMethod = {
   get: async () => {
-    return await localMemory.get();
+    const token = await localMemory.get();
+    console.log('Token from storage:', token);
+    return token; // Trả về trực tiếp object đã lưu
   },
-  set: async (token) => {
-    await localMemory.set(token);
+  set: async (data) => {
+    console.log('Data to store:', data);
+    await localMemory.set(data); // Lưu trực tiếp object
   },
   remove: async () => {
     await localMemory.remove();
