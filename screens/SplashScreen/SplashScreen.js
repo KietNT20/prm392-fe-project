@@ -1,9 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import { styled } from 'nativewind';
 import { useEffect, useRef } from 'react';
-import { Animated, View } from 'react-native';
-import { Text } from 'react-native-elements';
+import { Animated, View, Text } from 'react-native';
 
 const SplashScreen = () => {
   const fadeAnim = useRef(new Animated.Value(0)).current; // Initial opacity: 0
@@ -23,22 +21,16 @@ const SplashScreen = () => {
     });
   }, [fadeAnim, navigation]);
 
-  const AnimatedView = styled(Animated.View);
-  const StyledView = styled(View);
-  const StyledText = styled(Text);
-
   return (
-    <StyledView className="flex-1 justify-center items-center bg-indigo-500">
-      <AnimatedView
+    <View className="flex-1 justify-center items-center bg-indigo-500">
+      <Animated.View
         style={{ opacity: fadeAnim }}
         className="justify-center items-center"
       >
         <Ionicons name="paw-outline" size={80} color="white" />
-        <StyledText className="text-4xl font-bold text-white mt-4">
-          PawFund
-        </StyledText>
-      </AnimatedView>
-    </StyledView>
+        <Text className="text-4xl font-bold text-white mt-4">PawFund</Text>
+      </Animated.View>
+    </View>
   );
 };
 

@@ -1,28 +1,44 @@
 import React, { useState } from 'react';
-import { Text, ImageBackground, ScrollView, View } from 'react-native';
+import { Text, ImageBackground, ScrollView, View, Alert } from 'react-native';
 import { Input, Button } from 'react-native-elements';
 import { TouchableOpacity } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons'; // Import your custom hook
+import { useRegister } from '@/hooks/useAuth';
 
 const RegisterScreen = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
+  const [address, setAddress] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
+  const { registerUser, isLoading } = useRegister(); // Destructure from your hook
+
   const handleRegister = () => {
-    // Validate inputs
-    if (!username || !phone || !email || !password || !confirmPassword) {
+    if (
+      !username ||
+      !phone ||
+      !email ||
+      !password ||
+      !confirmPassword ||
+      !address
+    ) {
       return Alert.alert('Error', 'All fields are required.');
     }
     if (password !== confirmPassword) {
       return Alert.alert('Error', 'Passwords do not match.');
     }
 
-    // Prepare payload and trigger registration
-    const payload = { username, phone, email, password };
-    registerUser(payload); // Call the mutation from the hook
+    const payload = {
+      username,
+      email,
+      password,
+      address: '123 Main St', // You may want to add an input field for the address
+      phoneNumber: phone, // Use phoneNumber instead of phone
+    };
+
+    registerUser(payload); // Send the corrected payload
   };
 
   return (
@@ -51,7 +67,7 @@ const RegisterScreen = ({ navigation }) => {
             inputStyle={{ color: '#fff' }}
             leftIcon={
               <Ionicons
-                name="mail-outline"
+                name="person-outline"
                 size={24}
                 color="#ddd"
                 style={{ marginLeft: 10, marginRight: 10 }}
@@ -84,6 +100,26 @@ const RegisterScreen = ({ navigation }) => {
             }}
           />
           <Input
+            placeholder="Address"
+            value={address}
+            onChangeText={setAddress}
+            placeholderTextColor="#ddd"
+            inputStyle={{ color: '#fff' }}
+            leftIcon={
+              <Ionicons
+                name="location-outline"
+                size={24}
+                color="#ddd"
+                style={{ marginLeft: 10, marginRight: 10 }}
+              />
+            }
+            containerStyle={{ marginBottom: 2 }}
+            inputContainerStyle={{
+              backgroundColor: 'rgba(255, 255, 255, 0.2)',
+              borderRadius: 8,
+            }}
+          />
+          <Input
             placeholder="Phone"
             value={phone}
             onChangeText={setPhone}
@@ -91,7 +127,7 @@ const RegisterScreen = ({ navigation }) => {
             inputStyle={{ color: '#fff' }}
             leftIcon={
               <Ionicons
-                name="mail-outline"
+                name="call-outline"
                 size={24}
                 color="#ddd"
                 style={{ marginLeft: 10, marginRight: 10 }}
@@ -157,6 +193,7 @@ const RegisterScreen = ({ navigation }) => {
             }}
             titleStyle={{ fontWeight: 'bold', fontSize: 16 }}
             containerStyle={{ width: '100%', marginBottom: 2 }}
+            loading={isLoading} // Show loading indicator when registering
           />
 
           <TouchableOpacity onPress={() => navigation.navigate('Login')}>

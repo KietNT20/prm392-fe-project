@@ -44,7 +44,7 @@ export const usePetDetail = (id) => {
 // Mutation for adding a pet
 export const useAddPet = () => {
   return useMutation({
-    mutationFn: (newPet) => petServices.addPet(newPet),
+    mutationFn: (newPet) => petServices.addPet(newPet), // Make sure you pass the full newPet object with the image id
     onSuccess: () => {
       console.log('Pet added successfully');
     },
@@ -60,6 +60,11 @@ export const useUploadImage = () => {
     mutationFn: (formData) => petServices.media(formData),
     onSuccess: (response) => {
       console.log('Image uploaded successfully:', response);
+      // Extract the image id from the response
+      const imageId = response?.data?.id;
+      if (imageId) {
+        console.log('Image ID:', imageId);
+      }
     },
     onError: (error) => {
       console.error('Error uploading image:', error);
@@ -84,6 +89,23 @@ export const useUpdatePet = () => {
     },
     onError: (error) => {
       console.error('Error updating pet:', error);
+    },
+  });
+};
+
+export const useDeletePet = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id) => petServices.deletePet(id), // Call delete API
+    onSuccess: () => {
+      console.log('Pet deleted successfully');
+
+      // Optionally invalidate or refetch queries related to the pets list
+      queryClient.invalidateQueries(['allPets']); // Ensure updated list after deletion
+    },
+    onError: (error) => {
+      console.error('Error deleting pet:', error);
     },
   });
 };

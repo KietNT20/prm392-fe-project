@@ -14,10 +14,17 @@ export const petServices = {
   updatePet(id, updatedPetData) {
     return axiosInstance.put(`${API.PET_UPDATE}${id}`, updatedPetData);
   },
-  media() {
-    return axiosInstance.post(API.MEDIA);
+  deletePet(id) {
+    return axiosInstance.delete(`${API.DELETE_PET}${id}`);
   },
   getImageById(image_id) {
     return axiosInstance.get(`${API.MEDIA}/${image_id}`);
+  },
+  media(formData) {
+    return axiosInstance.post(API.MEDIA, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data', // Important for file uploads
+      },
+    });
   },
 };

@@ -1,5 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { useMutation } from '@tanstack/react-query';
+import { Alert } from 'react-native';
 import { authServices } from 'services/authServices';
 import storageMethod from 'utils/storageMethod';
 
@@ -31,25 +32,28 @@ export const useRegister = () => {
     onSuccess: async (response) => {
       console.log('Registration success:', response);
 
-      // Simulate delay before storing token and navigating
       setTimeout(async () => {
-        // Save the token to AsyncStorage
         await storageMethod.set({ token: response.token });
-        // Navigate to Home screen or show success message
         Alert.alert('Registration Successful!', 'Welcome to PawFund!', [
-          { text: 'OK', onPress: () => navigation.navigate('Lo') },
+          { text: 'OK', onPress: () => navigation.navigate('Login') },
         ]);
-      }, 500); // Delay for 500ms to ensure backend completes registration
+      }, 500);
     },
     onError: (error) => {
-      console.log('Registration error', error);
-      Alert.alert('Registration Failed', error.message || 'Please try again.');
+      console.log(
+        'Registration error:',
+        error?.response?.data || error.message,
+      );
+      Alert.alert(
+        'Registration Failed',
+        error?.response?.data?.message || 'Please try again.',
+      );
     },
   });
 
   return {
-    registerUser: mutation.mutate, // Call this in the Register screen
-    isLoading: mutation.isLoading, // For loading states
-    ...mutation, // Spread any other properties you might need
+    registerUser: mutation.mutate, // Ensure the registerUser is returned correctly
+    isLoading: mutation.isLoading,
+    ...mutation,
   };
 };
