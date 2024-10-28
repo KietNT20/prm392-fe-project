@@ -10,6 +10,8 @@ import SplashScreen from './screens/SplashScreen/SplashScreen';
 import PetListingScreen from './screens/Pet/PetListingScreen';
 import PetDetailScreen from './screens/Pet/PetDetailScreen';
 import AddPetScreen from './screens/Pet/AddPetScreen';
+import NewListingScreen from './screens/New/NewListingScreen'; // Thêm dòng này
+import NewDetailScreen from './screens/New/NewDetailScreen'; // Thêm dòng này
 
 import { useNavigation } from '@react-navigation/native';
 import storageMethod from './utils/storageMethod';
@@ -65,6 +67,15 @@ export default function App() {
           <Drawer.Screen name="Home" component={HomeScreen} />
           <Drawer.Screen name="Donation" component={DonationScreen} />
           <Drawer.Screen name="Pet" component={PetListingScreen} />
+          <Drawer.Screen name="New" component={NewListingScreen} />
+          <Drawer.Screen
+            name="NewDetail"
+            component={NewDetailScreen} // Thêm dòng này
+            options={{
+              headerShown: false,
+              drawerItemStyle: { display: 'none' }, // Ẩn NewDetailScreen khỏi Drawer
+            }}
+          />
           <Drawer.Screen
             name="PetDetail"
             component={PetDetailScreen}
@@ -73,7 +84,6 @@ export default function App() {
               drawerItemStyle: { display: 'none' }, // Hide PetDetailScreen from Drawer
             }}
           />
-          {/* Add the Logout option */}
           <Drawer.Screen
             name="Logout"
             component={LogoutScreen}
