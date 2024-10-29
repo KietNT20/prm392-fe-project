@@ -6,6 +6,7 @@ import HomeScreen from "./screens/HomeScreen/HomeScreen";
 import AddPetScreen from "./screens/Pet/AddPetScreen";
 import PetDetailScreen from "./screens/Pet/PetDetailScreen";
 import PetListingScreen from "./screens/Pet/PetListingScreen";
+import SplashScreen from "./screens/SplashScreen/SplashScreen";
 import LoginScreen from "./screens/UserScreen/LoginScreen";
 import RegisterScreen from "./screens/UserScreen/RegisterScreen";
 
@@ -35,6 +36,7 @@ function RootNavigator() {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Welcome" component={SplashScreen} />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Register" component={RegisterScreen} />
         <Stack.Screen name="Drawer" component={DrawerNavigator} />

@@ -1,9 +1,9 @@
-import storageMethod from '@/utils/storageMethod';
-import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
-import { styled } from 'nativewind';
-import { useEffect, useRef, useState } from 'react';
-import { Animated, Text, View } from 'react-native';
+import storageMethod from "@/utils/storageMethod";
+import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import { styled } from "nativewind";
+import { useEffect, useRef, useState } from "react";
+import { Animated, Text, View } from "react-native";
 
 const SplashScreen = () => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -26,26 +26,17 @@ const SplashScreen = () => {
         // Wait for both animation and minimum splash duration
         setTimeout(async () => {
           if (token) {
-            navigation.reset({
-              index: 0,
-              routes: [{ name: 'Main' }],
-            });
+            navigation.navigate("Drawer");
           } else {
-            navigation.reset({
-              index: 0,
-              routes: [{ name: 'Auth' }],
-            });
+            navigation.navigate("Login");
           }
           setIsLoading(false);
         }, 2000); // Minimum splash screen duration
       } catch (error) {
-        console.error('Auth check failed:', error);
+        console.error("Auth check failed:", error);
         // If there's an error, navigate to Auth stack
         setTimeout(() => {
-          navigation.reset({
-            index: 0,
-            routes: [{ name: 'Auth' }],
-          });
+          navigation.navigate("Login");
           setIsLoading(false);
         }, 2000);
       }

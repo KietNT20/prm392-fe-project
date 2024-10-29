@@ -18,6 +18,10 @@ const HomeScreen = () => {
       // Xóa token trước
       await storageMethod.remove();
       // Lấy navigation root từ props và điều hướng
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "Login" }],
+      });
     } catch (error) {
       console.error("Logout error:", error);
     }
