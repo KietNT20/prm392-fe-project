@@ -1,5 +1,5 @@
+import axiosInstance from '@/config/axiosConfig';
 import { API } from 'api/apiUrl';
-import axiosInstance from 'utils/axiosConfig';
 
 export const authServices = {
   loginUser(payload) {
