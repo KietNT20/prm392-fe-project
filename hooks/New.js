@@ -1,4 +1,3 @@
-
 import { newServices } from '@/services/newServices';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useMutation } from '@tanstack/react-query';
@@ -38,7 +37,7 @@ export const useNewDetail = (id) => {
   });
 
   return {
-    newsItem: data?.data || null, 
+    newsItem: data?.data || null,
     isLoading,
     isError,
     error,
@@ -57,6 +56,36 @@ export const useDeleteNew = () => {
     },
     onError: (error) => {
       console.error('Error deleting news:', error);
+    },
+  });
+};
+// Hook để cập nhật thông tin một tin tức cụ thể
+export const useUpdateNew = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data) => newServices.updateNew(data), // Truyền vào đối tượng data với thông tin cần cập nhật
+    onSuccess: () => {
+      console.log('News updated successfully');
+      queryClient.invalidateQueries(['allNews']); // Cập nhật lại danh sách tin tức
+    },
+    onError: (error) => {
+      console.error('Error updating news:', error);
+    },
+  });
+};
+// Hook để cập nhật thông tin một tin tức cụ thể
+export const useAddNew = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data) => newServices.addNew(data), // Truyền vào đối tượng data với thông tin cần cập nhật
+    onSuccess: () => {
+      console.log('News add successfully');
+      queryClient.invalidateQueries(['allNews']); // Cập nhật lại danh sách tin tức
+    },
+    onError: (error) => {
+      console.error('Error updating news:', error);
     },
   });
 };

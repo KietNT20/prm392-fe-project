@@ -1,5 +1,5 @@
-import { API } from "@/api/apiUrl";
-import axiosInstance from "@/config/axiosConfig";
+import { API } from '@/api/apiUrl';
+import axiosInstance from '@/config/axiosConfig';
 
 export const newServices = {
   getAllNews() {
@@ -10,8 +10,14 @@ export const newServices = {
   },
   deleteNew(id) {
     return axiosInstance.delete(API.DELETE_NEWS, {
-      data: { id } 
+      data: { id },
     });
+  },
+  updateNew(data) {
+    return axiosInstance.put(API.UPDATE_NEWS, data);
+  },
+  addNew(data) {
+    return axiosInstance.post(API.ADD_NEWS, data);
   },
   queryNew(name) {
     return axiosInstance.get(`${API.NEWS_QUERY}?name=${name}`);
