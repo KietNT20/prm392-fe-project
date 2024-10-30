@@ -4,7 +4,7 @@ import { useMutation } from '@tanstack/react-query';
 
 export const useGetAllPets = () => {
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ['allPets'],
+    queryKey: ['pets'],
     queryFn: () => petServices.getAllPets(), // Call to the API
     onSuccess: (response) => {
       console.log('API Response:', response); // Log the response to see the structure
@@ -23,7 +23,7 @@ export const useGetAllPets = () => {
 };
 export const usePetDetail = (id) => {
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ['petDetail', id],
+    queryKey: ['pets', id],
     queryFn: () => petServices.getPetDetail(id), // Fetch pet detail using the ID
     onSuccess: (response) => {
       console.log('Pet detail fetched:', response);
@@ -43,13 +43,12 @@ export const usePetDetail = (id) => {
 
 // Mutation for adding a pet
 export const useAddPet = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (newPet) => petServices.addPet(newPet), // Make sure you pass the full newPet object with the image id
     onSuccess: () => {
       console.log('Pet added successfully');
-    },
-    onError: (error) => {
-      console.error('Error adding pet:', error);
+      queryClient.invalidateQueries(['pets']);
     },
   });
 };
@@ -57,14 +56,11 @@ export const useAddPet = () => {
 // Mutation for uploading an image
 export const useUploadImage = () => {
   return useMutation({
-    mutationFn: (formData) => petServices.media(formData),
-    onSuccess: (response) => {
-      console.log('Image uploaded successfully:', response);
-      // Extract the image id from the response
-      const imageId = response?.data?.id;
-      if (imageId) {
-        console.log('Image ID:', imageId);
-      }
+    mutationFn: (imageFile) => {
+      const formData = new FormData();
+      formData.append('image', imageFile); // assuming 'image' is the field name for the image in the backend
+
+      return petServices.media(formData); // pass the FormData object to the media service
     },
     onError: (error) => {
       console.error('Error uploading image:', error);
@@ -82,10 +78,10 @@ export const useUpdatePet = () => {
       console.log('Pet updated successfully:', response);
 
       // Use correct pet ID from response
-      queryClient.invalidateQueries(['petDetail', response.pet._id]);
+      queryClient.invalidateQueries(['pets', response.pet._id]);
 
       // Optionally, you can refetch the data to ensure the UI reflects the latest data
-      queryClient.refetchQueries(['petDetail', response.pet._id]);
+      queryClient.refetchQueries(['pets', response.pet._id]);
     },
     onError: (error) => {
       console.error('Error updating pet:', error);
@@ -102,7 +98,7 @@ export const useDeletePet = () => {
       console.log('Pet deleted successfully');
 
       // Optionally invalidate or refetch queries related to the pets list
-      queryClient.invalidateQueries(['allPets']); // Ensure updated list after deletion
+      queryClient.invalidateQueries(['pets']); // Ensure updated list after deletion
     },
     onError: (error) => {
       console.error('Error deleting pet:', error);

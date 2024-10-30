@@ -8,8 +8,8 @@ export const petServices = {
   getPetDetail(id) {
     return axiosInstance.get(`${API.PET_DETAIL}${id}`);
   },
-  addPet() {
-    return axiosInstance.post(API.PETS);
+  addPet(payload) {
+    return axiosInstance.post(API.ADD_PET, payload);
   },
   updatePet(id, updatedPetData) {
     return axiosInstance.put(`${API.PET_UPDATE}${id}`, updatedPetData);
