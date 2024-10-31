@@ -9,4 +9,5 @@ export const API = {
   ADD_PET: 'pets/add',
   MEDIA: 'media',
   DELETE_PET: 'pets/delete/',
+  PET_QUERY: 'pets',
 };

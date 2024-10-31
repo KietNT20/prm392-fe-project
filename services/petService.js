@@ -27,4 +27,15 @@ export const petServices = {
       },
     });
   },
+  getPetsByQuery(queryParams) {
+    // Convert queryParams object to query string
+    const queryString = Object.keys(queryParams)
+      .map(
+        (key) =>
+          `${encodeURIComponent(key)}=${encodeURIComponent(queryParams[key])}`,
+      )
+      .join('&');
+
+    return axiosInstance.get(`${API.PET_QUERY}?${queryString}`);
+  },
 };

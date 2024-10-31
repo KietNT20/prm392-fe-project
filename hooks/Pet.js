@@ -105,3 +105,23 @@ export const useDeletePet = () => {
     },
   });
 };
+export const useSearchPets = (queryParams) => {
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey: ['petsQuery', queryParams],
+    queryFn: () => petServices.getPetsByQuery(queryParams),
+    enabled: !!queryParams && Object.keys(queryParams).length > 0,
+    onSuccess: (response) => {
+      console.log('Search results:', response);
+    },
+    onError: (error) => {
+      console.log('Error fetching search results:', error);
+    },
+  });
+
+  return {
+    pets: data?.data || [],
+    isLoading,
+    isError,
+    error,
+  };
+};
