@@ -1,185 +1,338 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
+  Button,
   Text,
   TextInput,
-  TouchableOpacity,
-  ScrollView,
-  Image,
+  Switch,
   Alert,
-  StyleSheet,
+  Image,
+  TouchableOpacity,
+  Modal,
+  TouchableWithoutFeedback,
+  FlatList,
+  ScrollView,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { petServices } from '@/services/petService';
-import * as ImagePicker from 'expo-image-picker'; // Use expo-image-picker
+import * as ImagePicker from 'expo-image-picker';
+import { useUploadImage, useAddPet } from '@/hooks/Pet';
 
-const AddPetScreen = () => {
-  const navigation = useNavigation();
-  const [petName, setPetName] = useState('');
-  const [petBreed, setPetBreed] = useState('');
-  const [petAge, setPetAge] = useState('');
-  const [file, setFile] = useState(null);
-  const [error, setError] = useState(null);
+const AddPetForm = () => {
+  const [imageUri, setImageUri] = useState(null); // For displaying the image
+  const [uploadedImageId, setUploadedImageId] = useState(null); // To hold the uploaded image ID
+  const [hasPermission, setHasPermission] = useState(null); // To track permission status
+  const [formData, setFormData] = useState({
+    name: '',
+    sex: '',
+    age: '',
+    species: '',
+    coatColor: '',
+    breed: '',
+    vaccinated: false,
+    healthStatus: '',
+    description: '',
+  });
+  const [isHealthModalVisible, setIsHealthModalVisible] = useState(false); // For health status modal
 
-  // Function to pick an image from the device's media library
-  const handleSelectImage = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+  const { mutate: uploadImage } = useUploadImage();
+  const { mutate: addPet } = useAddPet();
 
-    if (status !== 'granted') {
+  const healthStatusOptions = ['Healthy', 'Sick', 'Injured']; // Health status options
+
+  // Request media library permissions on component mount
+  useEffect(() => {
+    (async () => {
+      const { status } =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+      setHasPermission(status === 'granted');
+
+      if (status !== 'granted') {
+        Alert.alert(
+          'Permission required',
+          'We need access to your camera roll to upload photos. Please enable it in your device settings.',
+        );
+      }
+    })();
+  }, []);
+
+  // Pick an image from the user's device
+  const pickImage = async () => {
+    if (!hasPermission) {
       Alert.alert(
         'Permission Denied',
-        'Sorry, we need camera roll permission to upload images.',
+        'Camera roll access is required to upload an image.',
       );
-    } else {
+      return;
+    }
+
+    try {
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [4, 3],
         quality: 1,
       });
 
-      if (!result.cancelled) {
-        setFile(result.uri);
-        setError(null); // Clear any previous error
+      if (!result.canceled && result.assets && result.assets.length > 0) {
+        const pickedImageUri = result.assets[0].uri;
+        setImageUri(pickedImageUri);
+        setUploadedImageId(null); // Reset uploaded image ID when a new image is picked
       } else {
-        setError('Image selection was cancelled.');
+        console.log('Image picking was canceled.');
       }
-    }
-  };
-
-  // Handle image upload to media API
-  const handleUploadImage = async () => {
-    if (!file) {
-      Alert.alert('No image selected', 'Please select an image first.');
-      return null;
-    }
-
-    const formData = new FormData();
-    formData.append('file', {
-      uri: file,
-      name: `image_${Date.now()}.jpg`, // Assign a default name if missing
-      type: 'image/jpeg',
-    });
-
-    try {
-      const uploadResponse = await petServices.media(formData); // Upload image to API
-      return uploadResponse?.data?.url; // Return the uploaded image URL
     } catch (error) {
-      console.error('Error uploading image:', error);
-      Alert.alert('Image upload failed', 'Please try again.');
-      return null;
+      console.error('Error picking the image:', error);
     }
   };
 
-  const handleAddPet = async () => {
-    try {
-      const uploadedImageUrl = await handleUploadImage(); // Upload image first
-      if (!uploadedImageUrl) return; // Ensure the image was uploaded before proceeding
+  // Upload the selected image
+  const uploadAndSaveImage = async () => {
+    if (!imageUri) {
+      Alert.alert('No Image', 'Please select an image before uploading.');
+      return;
+    }
 
-      const newPet = {
-        name: petName,
-        breed: petBreed,
-        age: petAge,
-        image: uploadedImageUrl, // Set uploaded image URL
+    try {
+      const fileType = imageUri.split('.').pop();
+
+      const imageFile = {
+        uri: imageUri,
+        name: `photo.${fileType}`,
+        type: `image/${fileType}`,
       };
 
-      await petServices.addPet(newPet); // Add the pet to the backend
-      Alert.alert('Success', 'Pet added successfully!');
-      navigation.goBack(); // Go back after adding the pet
+      uploadImage(imageFile, {
+        onSuccess: (response) => {
+          const imageId = response?.id;
+          if (imageId) {
+            setUploadedImageId(imageId);
+            Alert.alert('Upload successful', `Image ID: ${imageId}`);
+          }
+        },
+        onError: (error) => {
+          console.error('Error uploading the image:', error);
+        },
+      });
     } catch (error) {
-      console.error('Error adding pet:', error);
-      Alert.alert('Failed to add pet', 'Please try again.');
+      console.error('Error uploading the image:', error);
     }
   };
 
+  // Submit the pet details with the uploaded image ID
+  const submitPet = () => {
+    if (!uploadedImageId) {
+      Alert.alert('Error', 'Please upload an image before submitting.');
+      return;
+    }
+
+    const petData = {
+      ...formData,
+      age: parseInt(formData.age, 10), // Ensure age is a number
+      image_id: uploadedImageId, // Pass the uploaded image ID
+    };
+
+    addPet(petData, {
+      onSuccess: () => {
+        Alert.alert('Pet added successfully');
+      },
+      onError: (error) => {
+        console.error('Error adding pet:', error);
+      },
+    });
+  };
+
+  // Render the form inputs
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.header}>Add a New Pet</Text>
+    <ScrollView contentContainerStyle={{ padding: 20 }}>
+      {/* Pick Image */}
+      {!imageUri && !uploadedImageId && (
+        <Button title="Pick an Image" onPress={pickImage} />
+      )}
 
-      <Text style={styles.label}>Pet Name</Text>
+      {/* Display picked image */}
+      {imageUri && (
+        <>
+          <Image
+            source={{ uri: imageUri }}
+            style={{ width: 200, height: 200, marginVertical: 10 }}
+          />
+        </>
+      )}
+
+      {/* Upload Image */}
+      {imageUri && !uploadedImageId && (
+        <Button title="Upload Image" onPress={uploadAndSaveImage} />
+      )}
+
+      {/* Form Inputs */}
       <TextInput
-        style={styles.input}
-        placeholder="Enter pet name"
-        value={petName}
-        onChangeText={setPetName}
+        placeholder="Name"
+        value={formData.name}
+        onChangeText={(text) => setFormData({ ...formData, name: text })}
+        style={{
+          marginVertical: 10,
+          padding: 10,
+          borderColor: 'gray',
+          borderWidth: 1,
+        }}
       />
 
-      <Text style={styles.label}>Breed</Text>
       <TextInput
-        style={styles.input}
-        placeholder="Enter pet breed"
-        value={petBreed}
-        onChangeText={setPetBreed}
+        placeholder="Sex"
+        value={formData.sex}
+        onChangeText={(text) => setFormData({ ...formData, sex: text })}
+        style={{
+          marginVertical: 10,
+          padding: 10,
+          borderColor: 'gray',
+          borderWidth: 1,
+        }}
       />
 
-      <Text style={styles.label}>Age</Text>
       <TextInput
-        style={styles.input}
-        placeholder="Enter pet age"
-        value={petAge}
-        onChangeText={setPetAge}
+        placeholder="Species"
+        value={formData.species}
+        onChangeText={(text) => setFormData({ ...formData, species: text })}
+        style={{
+          marginVertical: 10,
+          padding: 10,
+          borderColor: 'gray',
+          borderWidth: 1,
+        }}
+      />
+
+      <TextInput
+        placeholder="Coat Color"
+        value={formData.coatColor}
+        onChangeText={(text) => setFormData({ ...formData, coatColor: text })}
+        style={{
+          marginVertical: 10,
+          padding: 10,
+          borderColor: 'gray',
+          borderWidth: 1,
+        }}
+      />
+
+      <TextInput
+        placeholder="Breed"
+        value={formData.breed}
+        onChangeText={(text) => setFormData({ ...formData, breed: text })}
+        style={{
+          marginVertical: 10,
+          padding: 10,
+          borderColor: 'gray',
+          borderWidth: 1,
+        }}
+      />
+
+      {/* Numeric input for Age */}
+      <TextInput
+        placeholder="Age"
+        value={formData.age}
         keyboardType="numeric"
+        onChangeText={(text) => setFormData({ ...formData, age: text })}
+        style={{
+          marginVertical: 10,
+          padding: 10,
+          borderColor: 'gray',
+          borderWidth: 1,
+        }}
       />
 
-      {file && <Image source={{ uri: file }} style={styles.image} />}
+      {/* Vaccinated Switch */}
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          marginVertical: 10,
+        }}
+      >
+        <Text>Vaccinated: </Text>
+        <Switch
+          value={formData.vaccinated}
+          onValueChange={(value) =>
+            setFormData({ ...formData, vaccinated: value })
+          }
+        />
+      </View>
 
-      <TouchableOpacity style={styles.button} onPress={handleSelectImage}>
-        <Text style={styles.buttonText}>Select Pet Image</Text>
+      {/* Health Status (Modal Dropdown) */}
+      <TouchableOpacity onPress={() => setIsHealthModalVisible(true)}>
+        <TextInput
+          placeholder="Health Status"
+          value={formData.healthStatus}
+          editable={false} // Disable direct text input
+          style={{
+            marginVertical: 10,
+            padding: 10,
+            borderColor: 'gray',
+            borderWidth: 1,
+          }}
+        />
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.button} onPress={handleAddPet}>
-        <Text style={styles.buttonText}>Add Pet</Text>
-      </TouchableOpacity>
+      {/* Modal for Health Status Options */}
+      <Modal
+        visible={isHealthModalVisible}
+        transparent={true}
+        animationType="slide"
+      >
+        <TouchableWithoutFeedback
+          onPress={() => setIsHealthModalVisible(false)}
+        >
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              backgroundColor: 'rgba(0,0,0,0.5)',
+            }}
+          >
+            <View
+              style={{
+                backgroundColor: 'white',
+                margin: 20,
+                padding: 20,
+                borderRadius: 10,
+              }}
+            >
+              <Text>Select Health Status</Text>
+              <FlatList
+                data={healthStatusOptions}
+                keyExtractor={(item) => item}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    onPress={() => {
+                      setFormData({ ...formData, healthStatus: item });
+                      setIsHealthModalVisible(false);
+                    }}
+                  >
+                    <Text style={{ padding: 10 }}>{item}</Text>
+                  </TouchableOpacity>
+                )}
+              />
+            </View>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
 
-      {error && <Text style={styles.errorText}>{error}</Text>}
+      {/* Description */}
+      <TextInput
+        placeholder="Description"
+        value={formData.description}
+        onChangeText={(text) => setFormData({ ...formData, description: text })}
+        multiline={true}
+        numberOfLines={4}
+        style={{
+          marginVertical: 10,
+          padding: 10,
+          borderColor: 'gray',
+          borderWidth: 1,
+        }}
+      />
+
+      {/* Show "Submit Pet" button after the image is uploaded */}
+      <Button title="Submit Pet" onPress={submitPet} />
     </ScrollView>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    padding: 20,
-    backgroundColor: 'white',
-  },
-  header: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#4F46E5',
-    marginBottom: 20,
-  },
-  label: {
-    fontSize: 16,
-    color: '#374151',
-    marginBottom: 10,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#D1D5DB',
-    borderRadius: 10,
-    padding: 10,
-    marginBottom: 20,
-  },
-  button: {
-    backgroundColor: '#4F46E5',
-    borderRadius: 10,
-    paddingVertical: 15,
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  image: {
-    width: '100%',
-    height: 200,
-    marginBottom: 20,
-    borderRadius: 10,
-  },
-  errorText: {
-    color: 'red',
-    marginTop: 10,
-  },
-});
-
-export default AddPetScreen;
+export default AddPetForm;
