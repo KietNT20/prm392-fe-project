@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  Image,
-  ActivityIndicator,
-  Modal,
-  TouchableWithoutFeedback,
-  Alert,
-} from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons';
-import { useDeletePet, useGetAllPets } from '@/hooks/Pet';
 import PetSearchBar from '@/components/Search/SearchBar';
+import { useDeletePet, useGetAllPets } from '@/hooks/Pet';
+import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { useState } from 'react';
+import {
+  ActivityIndicator,
+  Alert,
+  FlatList,
+  Image,
+  Modal,
+  Text,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 
 const PetListingScreen = () => {
   const navigation = useNavigation();
@@ -24,13 +24,6 @@ const PetListingScreen = () => {
   // Pass searchParams to useGetAllPets to trigger search with current filters
   const { pets, isLoading, isError, error } = useGetAllPets(searchParams);
   const { mutate: deletePet } = useDeletePet();
-
-  // Log to test if the API for fetching pets works correctly
-  useEffect(() => {
-    if (isLoading) console.log('Fetching pets...');
-    if (isError) console.error('Error fetching pets:', error);
-    if (pets) console.log('Fetched pets:', pets);
-  }, [isLoading, isError, pets]);
 
   const handleDelete = (petId) => {
     Alert.alert('Delete Pet', 'Are you sure you want to delete this pet?', [

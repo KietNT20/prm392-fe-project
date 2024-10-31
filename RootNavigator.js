@@ -1,14 +1,14 @@
-import { createDrawerNavigator } from "@react-navigation/drawer";
-import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
-import DonationScreen from "./screens/DonateScreen/DonateScreen";
-import HomeScreen from "./screens/HomeScreen/HomeScreen";
-import AddPetScreen from "./screens/Pet/AddPetScreen";
-import PetDetailScreen from "./screens/Pet/PetDetailScreen";
-import PetListingScreen from "./screens/Pet/PetListingScreen";
-import SplashScreen from "./screens/SplashScreen/SplashScreen";
-import LoginScreen from "./screens/UserScreen/LoginScreen";
-import RegisterScreen from "./screens/UserScreen/RegisterScreen";
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import DonationScreen from './screens/DonateScreen/DonateScreen';
+import HomeScreen from './screens/HomeScreen/HomeScreen';
+import AddPetScreen from './screens/Pet/AddPetScreen';
+import PetDetailScreen from './screens/Pet/PetDetailScreen';
+import PetListingScreen from './screens/Pet/PetListingScreen';
+import SplashScreen from './screens/SplashScreen/SplashScreen';
+import LoginScreen from './screens/UserScreen/LoginScreen';
+import RegisterScreen from './screens/UserScreen/RegisterScreen';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -25,7 +25,7 @@ function DrawerNavigator() {
         component={PetDetailScreen}
         options={{
           headerShown: false,
-          drawerItemStyle: { display: "none" },
+          drawerItemStyle: { display: 'none' },
         }}
       />
     </Drawer.Navigator>

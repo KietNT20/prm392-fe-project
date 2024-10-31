@@ -1,20 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  Image,
-  Alert,
-  TouchableOpacity,
-  Button,
-  TextInput,
-  ScrollView,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { useAddCartPet } from '@/hooks/CartPet';
 import { usePetDetail, useUpdatePet } from '@/hooks/Pet';
+import { Ionicons } from '@expo/vector-icons';
+import { useEffect, useState } from 'react';
+import {
+  Alert,
+  Button,
+  Image,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 const PetDetailScreen = ({ route, navigation }) => {
   const { petId, imageUrl } = route.params;
-  const { pet, isLoading, isError, error } = usePetDetail(petId);
+  const { pet } = usePetDetail(petId);
+  const { addCartPet } = useAddCartPet();
+  console.log('Pet Detail:', pet);
+
   const updatePetMutation = useUpdatePet();
 
   const [isEditMode, setIsEditMode] = useState(false);

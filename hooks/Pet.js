@@ -1,6 +1,5 @@
 import { petServices } from '@/services/petService';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 export const useGetAllPets = () => {
   const { data, isLoading, isError, error } = useQuery({
@@ -34,7 +33,7 @@ export const usePetDetail = (id) => {
   });
 
   return {
-    pet: data?.pet || null, // Access the 'pet' object directly from the API response
+    pet: data?.pet || null,
     isLoading,
     isError,
     error,
