@@ -1,26 +1,48 @@
-import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
-import { styled } from 'nativewind';
-import { useEffect, useRef } from 'react';
-import { Animated, View } from 'react-native';
-import { Text } from 'react-native-elements';
+import storageMethod from "@/utils/storageMethod";
+import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import { styled } from "nativewind";
+import { useEffect, useRef, useState } from "react";
+import { Animated, Text, View } from "react-native";
 
 const SplashScreen = () => {
-  const fadeAnim = useRef(new Animated.Value(0)).current; // Initial opacity: 0
+  const fadeAnim = useRef(new Animated.Value(0)).current;
   const navigation = useNavigation();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Start the animation
-    Animated.timing(fadeAnim, {
-      toValue: 1, // Fade to opacity 1
-      duration: 2000, // Animation duration
-      useNativeDriver: true,
-    }).start(() => {
-      // Navigate to the next screen once animation completes
-      setTimeout(() => {
-        navigation.navigate('Login'); // Replace 'Login' with your target screen
-      }, 1000); // Delay to hold the splash screen
-    });
+    const checkAuthAndAnimate = async () => {
+      // Start the fade-in animation
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 2000,
+        useNativeDriver: true,
+      }).start();
+
+      try {
+        // Check for authentication token while animation is running
+        const token = await storageMethod.get().token;
+
+        // Wait for both animation and minimum splash duration
+        setTimeout(async () => {
+          if (token) {
+            navigation.navigate("Drawer");
+          } else {
+            navigation.navigate("Login");
+          }
+          setIsLoading(false);
+        }, 2000); // Minimum splash screen duration
+      } catch (error) {
+        console.error("Auth check failed:", error);
+        // If there's an error, navigate to Auth stack
+        setTimeout(() => {
+          navigation.navigate("Login");
+          setIsLoading(false);
+        }, 2000);
+      }
+    };
+
+    checkAuthAndAnimate();
   }, [fadeAnim, navigation]);
 
   const AnimatedView = styled(Animated.View);
