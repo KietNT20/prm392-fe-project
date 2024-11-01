@@ -14,16 +14,19 @@ import {
 } from 'react-native';
 
 const PetDetailScreen = ({ route, navigation }) => {
-  const { petId, imageUrl } = route.params;
-  const { pet } = usePetDetail(petId);
-  const { addCartPet } = useAddCartPet();
-  console.log('Pet Detail:', pet);
-
-  const updatePetMutation = useUpdatePet();
-
   const [isEditMode, setIsEditMode] = useState(false);
   const [editablePet, setEditablePet] = useState(pet);
-  const [originalPet, setOriginalPet] = useState(null); // Store the original pet data to restore on cancel
+  const [originalPet, setOriginalPet] = useState(null);
+  const { petId, imageUrl } = route.params;
+  const { pet } = usePetDetail(petId);
+  const updatePetMutation = useUpdatePet();
+
+  const { addCartPet } = useAddCartPet();
+
+  const handleAddToCart = () => {
+    addCartPet(pet);
+    Alert.alert('Success', 'Pet added to cart successfully.');
+  };
 
   useEffect(() => {
     if (pet) {

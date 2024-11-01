@@ -8,7 +8,7 @@ const storageMethod = {
   },
   async get() {
     const data = await AsyncStorage.getItem(STORAGE.token);
-    return JSON.parse(data);
+    return data != null ? JSON.parse(data) : null;
   },
   async remove() {
     await AsyncStorage.removeItem(STORAGE.token);
