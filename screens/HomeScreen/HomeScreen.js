@@ -1,13 +1,6 @@
 import { useGetAllPets } from '@/hooks/Pet';
 import { Text } from '@rneui/themed';
-import {
-  Dimensions,
-  FlatList,
-  Image,
-  ScrollView,
-  StyleSheet,
-  View,
-} from 'react-native';
+import { Dimensions, Image, ScrollView, StyleSheet, View } from 'react-native';
 
 const HomeScreen = () => {
   const { pets } = useGetAllPets();
@@ -41,11 +34,9 @@ const HomeScreen = () => {
           />
         </View>
       </View>
-      <View>
+      <View className="flex-1 px-4">
         <Text h3>Blog and News</Text>
-        <View>
-          <FlatList />
-        </View>
+        <View></View>
       </View>
     </ScrollView>
   );

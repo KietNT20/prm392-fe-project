@@ -1,9 +1,10 @@
-import { cartPetService } from "@/services/cartPetService";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { cartPetService } from '@/services/cartPetService';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { Alert } from 'react-native';
 
 export const useGetAllCartPets = () => {
   const { data, ...rest } = useQuery({
-    queryKey: ["cartPets"],
+    queryKey: ['cartPets'],
     queryFn: () => cartPetService.getAllCartPets(),
   });
   return {
@@ -14,7 +15,7 @@ export const useGetAllCartPets = () => {
 
 export const useGetCartPetDetail = (id) => {
   const { data, ...rest } = useQuery({
-    queryKey: ["cartPets", id],
+    queryKey: ['cartPets', id],
     queryFn: () => cartPetService.getCartPetById(id),
   });
   return {
@@ -25,18 +26,21 @@ export const useGetCartPetDetail = (id) => {
 
 export const useAddCartPet = () => {
   const queryClient = useQueryClient();
-
   const { mutate: addCartPet, ...rest } = useMutation({
     mutationFn: (data) => cartPetService.addCartPet(data),
-    onSuccess: (response) => {
+    onSuccess: () => {
       // Invalidate and refetch relevant queries
-      queryClient.invalidateQueries(["pets", "cart"]);
+      queryClient.invalidateQueries(['pets', 'cart']);
       // Add success notification
-      toast.success("Pet added to cart successfully");
+      Alert.alert('Success', 'Pet added to cart successfully', [
+        { text: 'OK' },
+      ]);
     },
     onError: (error) => {
       // Add error notification
-      toast.error(error.message || "Failed to add pet to cart");
+      Alert.alert('Error', error.message || 'Failed to add pet to cart', [
+        { text: 'OK' },
+      ]);
     },
   });
 
@@ -53,13 +57,15 @@ export const useUpdateCartPetStatus = () => {
     mutationFn: (data) => cartPetService.updateStatusCartPet(data),
     onSuccess: (response) => {
       // Invalidate and refetch relevant queries
-      queryClient.invalidateQueries(["pets", "cart"]);
+      queryClient.invalidateQueries(['pets', 'cart']);
       // Add success notification
-      toast.success("Cart updated successfully");
+      Alert.alert('Success', 'Cart updated successfully', [{ text: 'OK' }]);
     },
     onError: (error) => {
       // Add error notification
-      toast.error(error.message || "Failed to update cart");
+      Alert.alert('Error', error.message || 'Failed to update cart', [
+        { text: 'OK' },
+      ]);
     },
   });
 
@@ -76,13 +82,17 @@ export const useDeleteCartPet = () => {
     mutationFn: (id) => cartPetService.deleteCartPet(id),
     onSuccess: (response) => {
       // Invalidate and refetch relevant queries
-      queryClient.invalidateQueries(["pets", "cart"]);
+      queryClient.invalidateQueries(['pets', 'cart']);
       // Add success notification
-      toast.success("Pet removed from cart successfully");
+      Alert.alert('Success', 'Pet removed from cart successfully', [
+        { text: 'OK' },
+      ]);
     },
     onError: (error) => {
       // Add error notification
-      toast.error(error.message || "Failed to remove pet from cart");
+      Alert.alert('Error', error.message || 'Failed to remove pet from cart', [
+        { text: 'OK' },
+      ]);
     },
   });
 

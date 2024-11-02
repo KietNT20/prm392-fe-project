@@ -1,6 +1,7 @@
 import { useAddCartPet } from '@/hooks/CartPet';
 import { usePetDetail, useUpdatePet } from '@/hooks/Pet';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
 import {
   Alert,
@@ -13,20 +14,17 @@ import {
   View,
 } from 'react-native';
 
-const PetDetailScreen = ({ route, navigation }) => {
+const PetDetailScreen = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [editablePet, setEditablePet] = useState(pet);
   const [originalPet, setOriginalPet] = useState(null);
+  const navigation = useNavigation();
+  const route = useRoute();
   const { petId, imageUrl } = route.params;
   const { pet } = usePetDetail(petId);
   const updatePetMutation = useUpdatePet();
 
   const { addCartPet } = useAddCartPet();
-
-  const handleAddToCart = () => {
-    addCartPet(pet);
-    Alert.alert('Success', 'Pet added to cart successfully.');
-  };
 
   useEffect(() => {
     if (pet) {
@@ -42,6 +40,11 @@ const PetDetailScreen = ({ route, navigation }) => {
   // Handle changes in TextInput fields
   const handleInputChange = (key, value) => {
     setEditablePet({ ...editablePet, [key]: value });
+  };
+
+  const handleRequestAdoption = () => {
+    Alert.alert('Adoption process started');
+    navigation.navigate('Adoption');
   };
 
   // Handle canceling the edit and revert to original data
@@ -192,7 +195,7 @@ const PetDetailScreen = ({ route, navigation }) => {
 
       <Button
         title="Start Adoption Process"
-        onPress={() => Alert.alert('Adoption process started')}
+        onPress={() => handleRequestAdoption()}
         color="#6c63ff"
       />
       <View className="mt-5 mb-10">
