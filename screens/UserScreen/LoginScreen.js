@@ -1,34 +1,45 @@
-import { Ionicons } from "@expo/vector-icons";
-import { useState } from "react";
+import { Ionicons } from '@expo/vector-icons';
+import { useLogin } from 'hooks/useAuth';
+import { useState } from 'react';
 import {
   ImageBackground,
   ScrollView,
   Text,
   TouchableOpacity,
   View,
-} from "react-native";
-import { Button, Input } from "react-native-elements";
-
-import { useLogin } from "hooks/useAuth";
+} from 'react-native';
+import { Button, Input } from 'react-native-elements';
 
 const LoginScreen = ({ navigation }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-  const { mutate: doLoginUser, isPending } = useLogin();
+  const { login, isLoading } = useLogin();
 
-  const handleLogin = () => {
-    doLoginUser({ identifier: email, password });
+  const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert('Lỗi', 'Vui lòng nhập email và mật khẩu');
+      return;
+    }
+    try {
+      console.log('Attempting login with:', { email, password });
+      await login({
+        identifier: email.trim(),
+        password: password.trim(),
+      });
+    } catch (error) {
+      console.error('Login handler error:', error);
+    }
   };
 
   return (
     <ImageBackground
-      source={require("../../assets/pngegg.png")}
+      source={require('../../assets/pngegg.png')}
       className="flex-1 justify-center"
       resizeMode="cover"
     >
       <ScrollView
-        contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
+        contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
         keyboardShouldPersistTaps="handled"
       >
         <View className="bg-black/50 px-5 py-10 justify-center items-center">
@@ -44,7 +55,7 @@ const LoginScreen = ({ navigation }) => {
             value={email}
             onChangeText={setEmail}
             placeholderTextColor="#ddd"
-            inputStyle={{ color: "#fff" }}
+            inputStyle={{ color: '#fff' }}
             leftIcon={
               <Ionicons
                 name="mail-outline"
@@ -55,7 +66,7 @@ const LoginScreen = ({ navigation }) => {
             }
             containerStyle={{ marginBottom: 15 }}
             inputContainerStyle={{
-              backgroundColor: "rgba(255, 255, 255, 0.2)",
+              backgroundColor: 'rgba(255, 255, 255, 0.2)',
               borderRadius: 8,
             }}
           />
@@ -65,7 +76,7 @@ const LoginScreen = ({ navigation }) => {
             value={password}
             onChangeText={setPassword}
             placeholderTextColor="#ddd"
-            inputStyle={{ color: "#fff" }}
+            inputStyle={{ color: '#fff' }}
             leftIcon={
               <Ionicons
                 name="lock-closed-outline"
@@ -76,26 +87,26 @@ const LoginScreen = ({ navigation }) => {
             }
             containerStyle={{ marginBottom: 15 }}
             inputContainerStyle={{
-              backgroundColor: "rgba(255, 255, 255, 0.2)",
+              backgroundColor: 'rgba(255, 255, 255, 0.2)',
               borderRadius: 8,
             }}
           />
 
           <Button
-            title={isPending ? "Logging in..." : "Log In"}
+            title={isLoading ? 'Logging in...' : 'Log In'}
             onPress={handleLogin}
-            disabled={isPending}
+            disabled={isLoading}
             buttonStyle={{
-              backgroundColor: "#6c63ff",
+              backgroundColor: '#6c63ff',
               borderRadius: 8,
-              width: "100%",
+              width: '100%',
               paddingVertical: 15,
             }}
-            titleStyle={{ fontWeight: "bold", fontSize: 16 }}
-            containerStyle={{ width: "100%", marginBottom: 10 }}
+            titleStyle={{ fontWeight: 'bold', fontSize: 16 }}
+            containerStyle={{ width: '100%', marginBottom: 10 }}
           />
 
-          <TouchableOpacity onPress={() => navigation.navigate("Register")}>
+          <TouchableOpacity onPress={() => navigation.navigate('Register')}>
             <Text className="text-center text-indigo-500 mt-5 text-sm">
               Don't have an account? Register here
             </Text>

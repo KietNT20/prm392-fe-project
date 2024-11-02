@@ -1,86 +1,78 @@
-import { useNavigation } from "@react-navigation/native";
-import { useMutation } from "@tanstack/react-query";
-import { Alert } from "react-native";
-import { authServices } from "services/authServices";
-import storageMethod from "utils/storageMethod";
+// hooks/useAuth.js
+import { authServices } from '@/services/authServices';
+import storageMethod from '@/utils/storageMethod';
+import { useNavigation } from '@react-navigation/native';
+import { useMutation } from '@tanstack/react-query';
+import { Alert } from 'react-native';
 
+// Hook đăng ký
 export const useRegister = () => {
   const navigation = useNavigation();
-
   const mutation = useMutation({
+    mutationKey: 'register',
     mutationFn: (data) => authServices.registerUser(data),
     onSuccess: async (response) => {
-      console.log("Registration success:", response);
-
-      // Simulate delay before storing token and navigating
-      setTimeout(async () => {
-        // Save the token to AsyncStorage
+      console.log('response', response);
+      try {
         await storageMethod.set({ token: response.token });
-        // Navigate to Home screen or show success message
-        Alert.alert("Registration Successful!", "Welcome to PawFund!", [
-          { text: "OK", onPress: () => navigation.navigate("Lo") },
+        Alert.alert('Đăng ký thành công!', 'Chào mừng bạn đến với PawFund!', [
+          { text: 'OK', onPress: () => navigation.navigate('Login') },
         ]);
-      }, 500); // Delay for 500ms to ensure backend completes registration
+      } catch (error) {
+        Alert.alert('Lỗi', 'Có lỗi xảy ra khi lưu thông tin đăng nhập');
+      }
     },
     onError: (error) => {
-      console.log("Registration error", error);
-      Alert.alert("Registration Failed", error.message || "Please try again.");
+      Alert.alert('Đăng ký thất bại', error.message || 'Vui lòng thử lại.');
     },
   });
 
   return {
-    registerUser: mutation.mutate, // Call this in the Register screen
-    isLoading: mutation.isLoading, // For loading states
-    ...mutation, // Spread any other properties you might need
+    registerUser: mutation.mutate,
+    isLoading: mutation.isPending,
   };
 };
 
+// Hook đăng nhập
 export const useLogin = () => {
   const navigation = useNavigation();
-  const { mutate, ...rest } = useMutation({
-    mutationKey: ["login"],
+  const {
+    mutate: login,
+    isPending: isLoading,
+    ...rest
+  } = useMutation({
+    mutationKey: 'login',
     mutationFn: ({ identifier, password }) =>
       authServices.loginUser({ identifier, password }),
     onSuccess: async (response) => {
+      console.log('response', response);
       try {
-        console.log("Login success", response);
-        if (response) {
-          await storageMethod.set({ token: response.token });
-          // Navigate trực tiếp đến DrawerScreens
-          navigation.navigate("Drawer");
-        }
+        await storageMethod.set({ token: response.token });
+        navigation.navigate('Drawer');
       } catch (error) {
-        console.error("Error handling login:", error);
-        Alert.alert(
-          "Login Error",
-          "There was an error while logging in. Please try again.",
-        );
+        Alert.alert('Lỗi', 'Có lỗi xảy ra khi lưu thông tin đăng nhập');
       }
     },
     onError: (error) => {
-      console.log("Login error", error);
       Alert.alert(
-        "Login Failed",
-        error?.message || "Invalid credentials. Please try again.",
+        'Đăng nhập thất bại',
+        error.message || 'Thông tin đăng nhập không chính xác',
       );
     },
   });
-
-  return { mutate, ...rest };
+  return { login, isLoading, ...rest };
 };
 
+// Hook đăng xuất
 export const useLogout = () => {
   const navigation = useNavigation();
+
   const logout = async () => {
     try {
       await storageMethod.remove();
-      navigation.navigate("Login");
+      navigation.replace('Login');
     } catch (error) {
-      console.error("Logout error:", error);
-      Alert.alert(
-        "Logout Error",
-        "There was an error while logging out. Please try again.",
-      );
+      Alert.alert('Lỗi', 'Có lỗi xảy ra khi đăng xuất. Vui lòng thử lại.');
     }
   };
 

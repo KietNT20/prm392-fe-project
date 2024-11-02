@@ -1,9 +1,8 @@
-import storageMethod from "@/utils/storageMethod";
-import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
-import { styled } from "nativewind";
-import { useEffect, useRef, useState } from "react";
-import { Animated, Text, View } from "react-native";
+import storageMethod from '@/utils/storageMethod';
+import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { useEffect, useRef, useState } from 'react';
+import { Animated, Text, View } from 'react-native';
 
 const SplashScreen = () => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -21,22 +20,21 @@ const SplashScreen = () => {
 
       try {
         // Check for authentication token while animation is running
-        const token = await storageMethod.get().token;
-
+        const token = await storageMethod.get();
         // Wait for both animation and minimum splash duration
         setTimeout(async () => {
           if (token) {
-            navigation.navigate("Drawer");
+            navigation.navigate('Drawer');
           } else {
-            navigation.navigate("Login");
+            navigation.navigate('Login');
           }
           setIsLoading(false);
         }, 2000); // Minimum splash screen duration
       } catch (error) {
-        console.error("Auth check failed:", error);
+        console.error('Auth check failed:', error);
         // If there's an error, navigate to Auth stack
         setTimeout(() => {
-          navigation.navigate("Login");
+          navigation.navigate('Login');
           setIsLoading(false);
         }, 2000);
       }
@@ -45,22 +43,16 @@ const SplashScreen = () => {
     checkAuthAndAnimate();
   }, [fadeAnim, navigation]);
 
-  const AnimatedView = styled(Animated.View);
-  const StyledView = styled(View);
-  const StyledText = styled(Text);
-
   return (
-    <StyledView className="flex-1 justify-center items-center bg-indigo-500">
-      <AnimatedView
+    <View className="flex-1 justify-center items-center bg-indigo-500">
+      <Animated.View
         style={{ opacity: fadeAnim }}
         className="justify-center items-center"
       >
         <Ionicons name="paw-outline" size={80} color="white" />
-        <StyledText className="text-4xl font-bold text-white mt-4">
-          PawFund
-        </StyledText>
-      </AnimatedView>
-    </StyledView>
+        <Text className="text-4xl font-bold text-white mt-4">PawFund</Text>
+      </Animated.View>
+    </View>
   );
 };
 
