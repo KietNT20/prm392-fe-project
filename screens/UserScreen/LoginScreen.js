@@ -1,21 +1,35 @@
-import React, { useState } from 'react';
-import { View, Text, ImageBackground, Alert, ScrollView } from 'react-native';
-import { Input, Button } from 'react-native-elements';
-import { TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-
-import storageMethod from '../../utils/storageMethod'; // Local storage management
-import { authServices } from 'services/authServices';
 import { useLogin } from 'hooks/useAuth';
+import { useState } from 'react';
+import {
+  ImageBackground,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { Button, Input } from 'react-native-elements';
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const { mutate: doLoginUser, isPending, isError } = useLogin();
+  const { login, isLoading } = useLogin();
 
-  const handleLogin = () => {
-    doLoginUser({ identifier: email, password: password });
+  const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert('Lỗi', 'Vui lòng nhập email và mật khẩu');
+      return;
+    }
+    try {
+      console.log('Attempting login with:', { email, password });
+      await login({
+        identifier: email.trim(),
+        password: password.trim(),
+      });
+    } catch (error) {
+      console.error('Login handler error:', error);
+    }
   };
 
   return (
@@ -79,9 +93,9 @@ const LoginScreen = ({ navigation }) => {
           />
 
           <Button
-            title={isPending ? 'Logging in...' : 'Log In'}
+            title={isLoading ? 'Logging in...' : 'Log In'}
             onPress={handleLogin}
-            disabled={isPending}
+            disabled={isLoading}
             buttonStyle={{
               backgroundColor: '#6c63ff',
               borderRadius: 8,

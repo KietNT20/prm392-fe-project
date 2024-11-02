@@ -1,6 +1,3 @@
-import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createDrawerNavigator } from '@react-navigation/drawer';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import LoginScreen from './screens/UserScreen/LoginScreen';
 import RegisterScreen from './screens/UserScreen/RegisterScreen';
@@ -19,22 +16,7 @@ import storageMethod from './utils/storageMethod';
 const Drawer = createDrawerNavigator();
 const queryClient = new QueryClient();
 
-function LogoutScreen() {
-  const navigation = useNavigation();
-
-  React.useEffect(() => {
-    // Clear token and navigate to Login screen
-    storageMethod.remove('token');
-    navigation.reset({
-      index: 0,
-      routes: [{ name: 'Login' }],
-    });
-  }, [navigation]);
-
-  return null;
-}
-
-export default function App() {
+function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <NavigationContainer>
@@ -97,3 +79,5 @@ export default function App() {
     </QueryClientProvider>
   );
 }
+
+export default App;

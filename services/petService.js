@@ -8,8 +8,8 @@ export const petServices = {
   getPetDetail(id) {
     return axiosInstance.get(`${API.PET_DETAIL}${id}`);
   },
-  addPet() {
-    return axiosInstance.post(API.PETS);
+  addPet(payload) {
+    return axiosInstance.post(API.ADD_PET, payload);
   },
   updatePet(id, updatedPetData) {
     return axiosInstance.put(`${API.PET_UPDATE}${id}`, updatedPetData);
@@ -26,5 +26,16 @@ export const petServices = {
         'Content-Type': 'multipart/form-data', // Important for file uploads
       },
     });
+  },
+  getPetsByQuery(queryParams) {
+    // Convert queryParams object to query string
+    const queryString = Object.keys(queryParams)
+      .map(
+        (key) =>
+          `${encodeURIComponent(key)}=${encodeURIComponent(queryParams[key])}`,
+      )
+      .join('&');
+
+    return axiosInstance.get(`${API.PET_QUERY}?${queryString}`);
   },
 };

@@ -1,10 +1,10 @@
+import { BASE_URL } from '@/utils/environment';
+import storageMethod from '@/utils/storageMethod';
 import axios from 'axios';
-import { BASE_URL } from '../utils/environment';
-import storageMethod from '../utils/storageMethod';
 
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
-  timeout: 10000,
+  timeout: 5000,
 });
 
 // Add a request interceptor

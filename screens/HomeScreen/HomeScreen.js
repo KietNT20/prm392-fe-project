@@ -1,15 +1,9 @@
-import { Button } from '@rneui/themed';
-import {
-  Dimensions,
-  Image,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { useGetAllPets } from '@/hooks/Pet';
+import { Text } from '@rneui/themed';
+import { Dimensions, Image, ScrollView, StyleSheet, View } from 'react-native';
 
-const HomeScreen = ({ navigation }) => {
+const HomeScreen = () => {
+  const { pets } = useGetAllPets();
   return (
     <ScrollView style={styles.container}>
       <View>
@@ -20,7 +14,7 @@ const HomeScreen = ({ navigation }) => {
       </View>
       <View className="py-10 px-4">
         <View>
-          <Text className="font-bold text-lg mb-3">Giới thiệu</Text>
+          <Text h3>Giới thiệu</Text>
           <Text className="mb-3">
             Hopeful Tails Trust được xây dựng dựa trên tiêu chí cổng thông tin
             khổng lồ và hoàn toàn miễn phí về vấn đề xung quanh động vật, đặc
@@ -31,9 +25,6 @@ const HomeScreen = ({ navigation }) => {
             là trải nghiệm thực tế của chúng tôi trong quá trình nuôi thúc cưng
             để đem đến cho mọi người những thông tin chính xác và hữu ích nhất.
           </Text>
-          <Pressable style={({ pressed }) => ({ opacity: pressed ? 0.5 : 1 })}>
-            <Button size="md">Medium</Button>
-          </Pressable>
         </View>
         <View className="overflow-hidden rounded-2xl mt-3">
           <Image
@@ -43,8 +34,8 @@ const HomeScreen = ({ navigation }) => {
           />
         </View>
       </View>
-      <View>
-        <Text>Blog and News</Text> 
+      <View className="flex-1 px-4">
+        <Text h3>Blog and News</Text>
         <View></View>
       </View>
     </ScrollView>

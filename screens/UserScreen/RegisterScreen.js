@@ -1,9 +1,15 @@
-import React, { useState } from 'react';
-import { Text, ImageBackground, ScrollView, View, Alert } from 'react-native';
-import { Input, Button } from 'react-native-elements';
-import { TouchableOpacity } from 'react-native';
-import { Ionicons } from '@expo/vector-icons'; // Import your custom hook
 import { useRegister } from '@/hooks/useAuth';
+import { Ionicons } from '@expo/vector-icons'; // Import your custom hook
+import { useState } from 'react';
+import {
+  Alert,
+  ImageBackground,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { Button, Input } from 'react-native-elements';
 
 const RegisterScreen = ({ navigation }) => {
   const [username, setUsername] = useState('');
@@ -34,7 +40,7 @@ const RegisterScreen = ({ navigation }) => {
       username,
       email,
       password,
-      address: '123 Main St', // You may want to add an input field for the address
+      address, // You may want to add an input field for the address
       phoneNumber: phone, // Use phoneNumber instead of phone
     };
 
