@@ -1,26 +1,82 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { StatusBar } from 'expo-status-bar';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import RootNavigator from './RootNavigator';
-import { AuthProvider } from './context/AuthContext';
+import LoginScreen from './screens/UserScreen/LoginScreen';
+import RegisterScreen from './screens/UserScreen/RegisterScreen';
+import DonationScreen from './screens/DonateScreen/DonateScreen';
+import HomeScreen from './screens/HomeScreen/HomeScreen';
+import SplashScreen from './screens/SplashScreen/SplashScreen';
+import PetListingScreen from './screens/Pet/PetListingScreen';
+import PetDetailScreen from './screens/Pet/PetDetailScreen';
+import AddPetScreen from './screens/Pet/AddPetScreen';
+import NewListingScreen from './screens/New/NewListingScreen'; // Thêm dòng này
+import NewDetailScreen from './screens/New/NewDetailScreen'; // Thêm dòng này
 
+import { useNavigation } from '@react-navigation/native';
+import storageMethod from './utils/storageMethod';
+
+const Drawer = createDrawerNavigator();
 const queryClient = new QueryClient();
 
 function App() {
   return (
-    <SafeAreaProvider>
-      <SafeAreaView className="flex-1">
-        <GestureHandlerRootView>
-          <QueryClientProvider client={queryClient}>
-            <AuthProvider>
-              <RootNavigator />
-              <StatusBar style="auto" />
-            </AuthProvider>
-          </QueryClientProvider>
-        </GestureHandlerRootView>
-      </SafeAreaView>
-    </SafeAreaProvider>
+    <QueryClientProvider client={queryClient}>
+      <NavigationContainer>
+        <Drawer.Navigator initialRouteName="Splash">
+          <Drawer.Screen
+            name="Splash"
+            component={SplashScreen}
+            options={{
+              headerShown: false,
+              drawerItemStyle: { display: 'none' }, // Hide SplashScreen from Drawer
+            }}
+          />
+          <Drawer.Screen
+            name="Login"
+            component={LoginScreen}
+            options={{
+              headerShown: false,
+              drawerItemStyle: { display: 'none' }, // Hide LoginScreen from Drawer
+            }}
+          />
+          <Drawer.Screen
+            name="Register"
+            component={RegisterScreen}
+            options={{
+              headerShown: false,
+              drawerItemStyle: { display: 'none' }, // Hide RegisterScreen from Drawer
+            }}
+          />
+          <Drawer.Screen name="AddPet" component={AddPetScreen} />
+          <Drawer.Screen name="Home" component={HomeScreen} />
+          <Drawer.Screen name="Donation" component={DonationScreen} />
+          <Drawer.Screen name="Pet" component={PetListingScreen} />
+          <Drawer.Screen name="New" component={NewListingScreen} />
+          <Drawer.Screen
+            name="NewDetail"
+            component={NewDetailScreen} // Thêm dòng này
+            options={{
+              headerShown: false,
+              drawerItemStyle: { display: 'none' }, // Ẩn NewDetailScreen khỏi Drawer
+            }}
+          />
+          <Drawer.Screen
+            name="PetDetail"
+            component={PetDetailScreen}
+            options={{
+              headerShown: false,
+              drawerItemStyle: { display: 'none' }, // Hide PetDetailScreen from Drawer
+            }}
+          />
+          <Drawer.Screen
+            name="Logout"
+            component={LogoutScreen}
+            options={{
+              headerShown: false,
+              drawerLabel: 'Logout',
+            }}
+          />
+        </Drawer.Navigator>
+      </NavigationContainer>
+    </QueryClientProvider>
   );
 }
 
