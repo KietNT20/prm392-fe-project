@@ -1,12 +1,5 @@
 import { useState } from 'react';
-import {
-  TextInput,
-  Button,
-  View,
-  TouchableOpacity,
-  Modal,
-  StyleSheet,
-} from 'react-native';
+import { TextInput, TouchableOpacity, View, Modal, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 export default function PetSearchBar({ onSearch }) {
@@ -18,27 +11,59 @@ export default function PetSearchBar({ onSearch }) {
   const [healthStatus, setHealthStatus] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
 
-  // Function to handle search with filtered params
-  const handleSearch = () => {
-    const params = { name, breed, species, age, vaccinated, healthStatus };
-    const filteredParams = Object.fromEntries(
-      Object.entries(params).filter(([_, v]) => v),
-    );
-    onSearch(filteredParams); // Pass only non-empty parameters
-    setModalVisible(false); // Close modal after search
+  // Trigger search and close modal
+  const handleSearch = (param, value) => {
+    const queryParams = { [param]: value };
+    if (value) onSearch(queryParams);
+    setModalVisible(false);
+    resetAdvancedFilters();
+  };
+
+  // Reset advanced filters when modal closes
+  const resetAdvancedFilters = () => {
+    setBreed('');
+    setSpecies('');
+    setAge('');
+    setVaccinated('');
+    setHealthStatus('');
+  };
+
+  // Show full list if no input provided
+  const handleMainSearch = () => {
+    onSearch(name ? { name } : {});
+  };
+
+  // Clear the main search input
+  const clearMainSearch = () => {
+    setName('');
+    onSearch({});
   };
 
   return (
-    <View style={styles.container}>
+    <View style={{ padding: 16, backgroundColor: '#f3f4f6' }}>
       {/* Main Search Bar */}
-      <View style={styles.searchBar}>
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          backgroundColor: 'white',
+          borderRadius: 8,
+          padding: 8,
+          marginBottom: 8,
+        }}
+      >
         <TextInput
-          style={styles.input}
+          style={{ flex: 1, padding: 8 }}
           placeholder="Search by name..."
           value={name}
           onChangeText={setName}
         />
-        <TouchableOpacity onPress={handleSearch}>
+        {name ? (
+          <TouchableOpacity onPress={clearMainSearch}>
+            <Icon name="close-circle" size={20} color="gray" />
+          </TouchableOpacity>
+        ) : null}
+        <TouchableOpacity onPress={handleMainSearch}>
           <Icon name="search" size={20} color="gray" />
         </TouchableOpacity>
       </View>
@@ -46,89 +71,107 @@ export default function PetSearchBar({ onSearch }) {
       {/* Advanced Filters Button */}
       <TouchableOpacity
         onPress={() => setModalVisible(true)}
-        style={styles.filterButton}
+        style={{ alignSelf: 'flex-end', padding: 4 }}
       >
         <Icon name="options" size={20} color="gray" />
       </TouchableOpacity>
 
       {/* Modal for Advanced Filters */}
       <Modal visible={modalVisible} transparent animationType="slide">
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <TextInput
-              placeholder="Search by breed..."
-              value={breed}
-              onChangeText={setBreed}
-              style={styles.input}
-            />
-            <TextInput
-              placeholder="Search by species..."
-              value={species}
-              onChangeText={setSpecies}
-              style={styles.input}
-            />
-            <TextInput
-              placeholder="Search by age..."
-              value={age}
-              onChangeText={setAge}
-              style={styles.input}
-              keyboardType="numeric"
-            />
-            <TextInput
-              placeholder="Search by vaccination status..."
-              value={vaccinated}
-              onChangeText={setVaccinated}
-              style={styles.input}
-            />
-            <TextInput
-              placeholder="Search by health status..."
-              value={healthStatus}
-              onChangeText={setHealthStatus}
-              style={styles.input}
-            />
-
-            {/* Buttons for Apply Filters and Close Modal */}
-            <Button title="Apply Filters" onPress={handleSearch} />
-            <Button
-              title="Close"
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <View
+            style={{
+              width: '80%',
+              backgroundColor: 'white',
+              padding: 16,
+              borderRadius: 8,
+            }}
+          >
+            {[
+              {
+                placeholder: 'Search by breed...',
+                value: breed,
+                setValue: setBreed,
+                param: 'breed',
+              },
+              {
+                placeholder: 'Search by species...',
+                value: species,
+                setValue: setSpecies,
+                param: 'species',
+              },
+              {
+                placeholder: 'Search by age...',
+                value: age,
+                setValue: setAge,
+                param: 'age',
+                keyboardType: 'numeric',
+              },
+              {
+                placeholder: 'Search by vaccination status...',
+                value: vaccinated,
+                setValue: setVaccinated,
+                param: 'vaccinated',
+              },
+              {
+                placeholder: 'Search by health status...',
+                value: healthStatus,
+                setValue: setHealthStatus,
+                param: 'healthStatus',
+              },
+            ].map(
+              (
+                { placeholder, value, setValue, param, keyboardType },
+                index,
+              ) => (
+                <View
+                  key={index}
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    marginBottom: 8,
+                  }}
+                >
+                  <TextInput
+                    placeholder={placeholder}
+                    value={value}
+                    onChangeText={setValue}
+                    style={{
+                      flex: 1,
+                      padding: 8,
+                      backgroundColor: 'white',
+                      borderRadius: 8,
+                    }}
+                    keyboardType={keyboardType}
+                  />
+                  <TouchableOpacity onPress={() => handleSearch(param, value)}>
+                    <Icon name="search" size={20} color="gray" />
+                  </TouchableOpacity>
+                </View>
+              ),
+            )}
+            <TouchableOpacity
               onPress={() => setModalVisible(false)}
-              color="red"
-            />
+              style={{
+                marginTop: 8,
+                padding: 8,
+                backgroundColor: 'red',
+                borderRadius: 8,
+                alignItems: 'center',
+              }}
+            >
+              <Text style={{ color: 'white' }}>Close</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { padding: 16, backgroundColor: '#f3f4f6' },
-  searchBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    marginBottom: 8,
-  },
-  input: {
-    flex: 1,
-    padding: 8,
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    marginVertical: 4,
-  },
-  filterButton: { alignSelf: 'flex-end', padding: 4 },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalContent: {
-    width: '80%',
-    padding: 16,
-    backgroundColor: '#fff',
-    borderRadius: 8,
-  },
-});

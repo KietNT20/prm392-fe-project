@@ -21,11 +21,9 @@ const PetListingScreen = () => {
   const [selectedPet, setSelectedPet] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
 
-  // Pass searchParams to useGetAllPets to trigger search with current filters
   const { pets, isLoading, isError, error } = useGetAllPets(searchParams);
   const { mutate: deletePet } = useDeletePet();
 
-  // Log to test if the API for fetching pets works correctly
   useEffect(() => {
     if (isLoading) console.log('Fetching pets...');
     if (isError) console.error('Error fetching pets:', error);
@@ -57,10 +55,23 @@ const PetListingScreen = () => {
     navigation.navigate('PetDetail', { petId, imageUrl });
   };
 
+  const getImageUrl = (item) => {
+    if (item.image && item.image.url) {
+      return item.image.url;
+    }
+    if (item.image_id) {
+      return `https://res.cloudinary.com/do9g6j7jw/image/upload/v1729306538/${item.image_id}.jpg`;
+    }
+    return 'https://via.placeholder.com/150';
+  };
+
+  const handleSearch = (params) => {
+    setSearchParams(params);
+  };
+
   return (
     <View style={{ flex: 1, padding: 16, backgroundColor: '#f3f4f6' }}>
-      {/* Pet Search Bar */}
-      <PetSearchBar onSearch={setSearchParams} />
+      <PetSearchBar onSearch={handleSearch} />
 
       {isLoading ? (
         <ActivityIndicator
@@ -78,28 +89,65 @@ const PetListingScreen = () => {
           keyExtractor={(item, index) => item._id || index.toString()}
           renderItem={({ item }) => (
             <TouchableOpacity
-              onPress={() => handleDetail(item._id, item.image.url)}
+              onPress={() => handleDetail(item._id, getImageUrl(item))}
               style={{
                 backgroundColor: '#fff',
-                padding: 16,
-                marginVertical: 4,
-                flexDirection: 'row',
-                alignItems: 'center',
-                borderRadius: 8,
+                marginVertical: 8,
+                borderRadius: 12,
+                overflow: 'hidden',
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.3,
+                shadowRadius: 4,
+                elevation: 5,
               }}
             >
+              {/* Image at the top of the card */}
               <Image
-                source={{ uri: item.image.url }}
-                style={{ width: 64, height: 64, borderRadius: 32 }}
+                source={{ uri: getImageUrl(item) }}
+                style={{ width: '100%', height: 200 }}
               />
-              <View style={{ marginLeft: 16, flex: 1 }}>
-                <Text style={{ fontSize: 18, color: '#4f46e5' }}>
+
+              {/* Info below the image */}
+              <View style={{ padding: 16 }}>
+                <Text
+                  style={{ fontSize: 18, fontWeight: 'bold', color: '#4f46e5' }}
+                >
                   {item.name}
                 </Text>
-                <Text>{item.breed}</Text>
-                <Text>{item.sex}</Text>
+                <Text
+                  style={{
+                    color: '#555',
+                    fontStyle: 'italic',
+                    fontWeight: 'bold',
+                    marginVertical: 4,
+                  }}
+                >
+                  Breed: {item.breed}
+                </Text>
+                <Text style={{ color: '#777' }}>Sex: {item.sex}</Text>
+                <Text style={{ color: '#777' }}>
+                  Health Status: {item.healthStatus}
+                </Text>
               </View>
-              <TouchableOpacity onPress={() => setSelectedPet(item)}>
+
+              {/* Icon button at the right */}
+              <TouchableOpacity
+                onPress={() => setSelectedPet(item)}
+                style={{
+                  position: 'absolute',
+                  top: 10,
+                  right: 10,
+                  backgroundColor: '#fff',
+                  borderRadius: 16,
+                  padding: 8,
+                  shadowColor: '#000',
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.3,
+                  shadowRadius: 4,
+                  elevation: 5,
+                }}
+              >
                 <Ionicons name="ellipsis-vertical" size={24} color="#000" />
               </TouchableOpacity>
             </TouchableOpacity>
@@ -107,7 +155,6 @@ const PetListingScreen = () => {
         />
       )}
 
-      {/* Modal for Pet Options */}
       {selectedPet && (
         <Modal
           transparent
@@ -134,7 +181,7 @@ const PetListingScreen = () => {
               >
                 <TouchableOpacity
                   onPress={() =>
-                    handleDetail(selectedPet._id, selectedPet.image.url)
+                    handleDetail(selectedPet._id, getImageUrl(selectedPet))
                   }
                   style={{ paddingVertical: 8 }}
                 >

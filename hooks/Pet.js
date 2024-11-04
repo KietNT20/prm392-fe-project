@@ -2,12 +2,15 @@ import { petServices } from '@/services/petService';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useMutation } from '@tanstack/react-query';
 
-export const useGetAllPets = () => {
+export const useGetAllPets = (searchParams = {}) => {
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ['pets'],
-    queryFn: () => petServices.getAllPets(), // Call to the API
+    queryKey: ['pets', searchParams],
+    queryFn: () =>
+      Object.keys(searchParams).length
+        ? petServices.getPetsByQuery(searchParams) // Fetch with filters
+        : petServices.getAllPets(), // Fetch all pets if no filters
     onSuccess: (response) => {
-      console.log('API Response:', response); // Log the response to see the structure
+      console.log('Fetched pets:', response);
     },
     onError: (error) => {
       console.log('Error fetching pets:', error);
@@ -15,12 +18,13 @@ export const useGetAllPets = () => {
   });
 
   return {
-    pets: data?.data || [], // Handle the structure of the response
+    pets: data?.data || [],
     isLoading,
     isError,
     error,
   };
 };
+
 export const usePetDetail = (id) => {
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ['pets', id],
