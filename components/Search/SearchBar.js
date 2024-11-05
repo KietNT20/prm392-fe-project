@@ -1,8 +1,19 @@
 import { useState } from 'react';
-import { TextInput, TouchableOpacity, View, Modal, Text } from 'react-native';
+import {
+  TextInput,
+  TouchableOpacity,
+  View,
+  Modal,
+  Text,
+  FlatList,
+  ActivityIndicator,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useNavigation } from '@react-navigation/native';
+import { useGetAllPets } from '@/hooks/Pet';
 
 export default function PetSearchBar({ onSearch }) {
+  const navigation = useNavigation();
   const [name, setName] = useState('');
   const [breed, setBreed] = useState('');
   const [species, setSpecies] = useState('');
@@ -11,15 +22,17 @@ export default function PetSearchBar({ onSearch }) {
   const [healthStatus, setHealthStatus] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
 
-  // Trigger search and close modal
-  const handleSearch = (param, value) => {
-    const queryParams = { [param]: value };
-    if (value) onSearch(queryParams);
-    setModalVisible(false);
-    resetAdvancedFilters();
+  // Fetch pets based on the search term
+  const { pets, isLoading } = useGetAllPets(name ? { name } : {});
+
+  const handleSelectPet = (petId, imageUrl) => {
+    navigation.navigate('PetDetail', {
+      petId: petId,
+      imageUrl: imageUrl,
+    });
+    setName('');
   };
 
-  // Reset advanced filters when modal closes
   const resetAdvancedFilters = () => {
     setBreed('');
     setSpecies('');
@@ -28,19 +41,34 @@ export default function PetSearchBar({ onSearch }) {
     setHealthStatus('');
   };
 
-  // Show full list if no input provided
+  const handleSearch = (param, value) => {
+    const queryParams = { [param]: value };
+    if (value) onSearch(queryParams);
+    setModalVisible(false);
+    resetAdvancedFilters();
+  };
+
   const handleMainSearch = () => {
     onSearch(name ? { name } : {});
   };
 
-  // Clear the main search input
   const clearMainSearch = () => {
     setName('');
     onSearch({});
   };
 
+  const getImageUrl = (item) => {
+    if (item.image && item.image.url) {
+      return item.image.url;
+    }
+    if (item.image_id) {
+      return `https://res.cloudinary.com/do9g6j7jw/image/upload/v1729306538/${item.image_id}.jpg`;
+    }
+    return 'https://via.placeholder.com/150';
+  };
+
   return (
-    <View style={{ padding: 16, backgroundColor: '#f3f4f6' }}>
+    <View style={{ padding: 16, backgroundColor: '#e0e7ff' }}>
       {/* Main Search Bar */}
       <View
         style={{
@@ -50,30 +78,70 @@ export default function PetSearchBar({ onSearch }) {
           borderRadius: 8,
           padding: 8,
           marginBottom: 8,
+          borderColor: '#4f46e5', // Indigo border
+          borderWidth: 1,
         }}
       >
         <TextInput
-          style={{ flex: 1, padding: 8 }}
+          style={{ flex: 1, padding: 8, color: '#4f46e5' }} // Indigo text
           placeholder="Search by name..."
+          placeholderTextColor="#a5b4fc"
           value={name}
           onChangeText={setName}
         />
         {name ? (
           <TouchableOpacity onPress={clearMainSearch}>
-            <Icon name="close-circle" size={20} color="gray" />
+            <Icon name="close-circle" size={20} color="#4f46e5" />
           </TouchableOpacity>
         ) : null}
         <TouchableOpacity onPress={handleMainSearch}>
-          <Icon name="search" size={20} color="gray" />
+          <Icon name="search" size={20} color="#4f46e5" />
         </TouchableOpacity>
       </View>
+
+      {isLoading && <ActivityIndicator size="small" color="#4f46e5" />}
+
+      {name && (
+        <FlatList
+          data={pets}
+          keyExtractor={(item, index) =>
+            item.id ? item.id.toString() : index.toString()
+          }
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              onPress={() => handleSelectPet(item._id, getImageUrl(item))}
+              style={{
+                padding: 8,
+                backgroundColor: '#eef2ff',
+                borderBottomWidth: 1,
+                borderBottomColor: '#c7d2fe',
+              }}
+            >
+              <Text style={{ fontSize: 16, color: '#3730a3' }}>
+                {item.name}
+              </Text>
+              <Text style={{ color: '#4f46e5' }}>{item.breed}</Text>
+            </TouchableOpacity>
+          )}
+          ListEmptyComponent={
+            !isLoading &&
+            name && (
+              <Text
+                style={{ textAlign: 'center', marginTop: 16, color: '#4f46e5' }}
+              >
+                No pets found.
+              </Text>
+            )
+          }
+        />
+      )}
 
       {/* Advanced Filters Button */}
       <TouchableOpacity
         onPress={() => setModalVisible(true)}
         style={{ alignSelf: 'flex-end', padding: 4 }}
       >
-        <Icon name="options" size={20} color="gray" />
+        <Icon name="options" size={20} color="#4f46e5" />
       </TouchableOpacity>
 
       {/* Modal for Advanced Filters */}
@@ -89,9 +157,11 @@ export default function PetSearchBar({ onSearch }) {
           <View
             style={{
               width: '80%',
-              backgroundColor: 'white',
+              backgroundColor: '#e0e7ff',
               padding: 16,
               borderRadius: 8,
+              borderColor: '#4f46e5',
+              borderWidth: 1,
             }}
           >
             {[
@@ -141,6 +211,7 @@ export default function PetSearchBar({ onSearch }) {
                 >
                   <TextInput
                     placeholder={placeholder}
+                    placeholderTextColor="#a5b4fc"
                     value={value}
                     onChangeText={setValue}
                     style={{
@@ -148,11 +219,14 @@ export default function PetSearchBar({ onSearch }) {
                       padding: 8,
                       backgroundColor: 'white',
                       borderRadius: 8,
+                      borderColor: '#4f46e5',
+                      borderWidth: 1,
+                      color: '#4f46e5',
                     }}
                     keyboardType={keyboardType}
                   />
                   <TouchableOpacity onPress={() => handleSearch(param, value)}>
-                    <Icon name="search" size={20} color="gray" />
+                    <Icon name="search" size={20} color="#4f46e5" />
                   </TouchableOpacity>
                 </View>
               ),
@@ -162,7 +236,7 @@ export default function PetSearchBar({ onSearch }) {
               style={{
                 marginTop: 8,
                 padding: 8,
-                backgroundColor: 'red',
+                backgroundColor: '#4f46e5',
                 borderRadius: 8,
                 alignItems: 'center',
               }}

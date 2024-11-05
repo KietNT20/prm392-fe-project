@@ -70,17 +70,17 @@ const PetListingScreen = () => {
   };
 
   return (
-    <View style={{ flex: 1, padding: 16, backgroundColor: '#f3f4f6' }}>
+    <View className="flex-1 p-4 bg-indigo-100">
       <PetSearchBar onSearch={handleSearch} />
 
       {isLoading ? (
         <ActivityIndicator
           size="large"
-          color="#0000ff"
-          style={{ flex: 1, justifyContent: 'center' }}
+          color="#4f46e5"
+          className="flex-1 justify-center"
         />
       ) : isError ? (
-        <Text style={{ color: 'red', textAlign: 'center' }}>
+        <Text className="text-red-500 text-center">
           Error loading pets: {error.message}
         </Text>
       ) : (
@@ -90,63 +90,32 @@ const PetListingScreen = () => {
           renderItem={({ item }) => (
             <TouchableOpacity
               onPress={() => handleDetail(item._id, getImageUrl(item))}
-              style={{
-                backgroundColor: '#fff',
-                marginVertical: 8,
-                borderRadius: 12,
-                overflow: 'hidden',
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.3,
-                shadowRadius: 4,
-                elevation: 5,
-              }}
+              className="bg-white my-2 rounded-lg shadow-md overflow-hidden"
             >
-              {/* Image at the top of the card */}
               <Image
                 source={{ uri: getImageUrl(item) }}
-                style={{ width: '100%', height: 200 }}
+                className="w-full h-48"
               />
 
-              {/* Info below the image */}
-              <View style={{ padding: 16 }}>
-                <Text
-                  style={{ fontSize: 18, fontWeight: 'bold', color: '#4f46e5' }}
-                >
+              <View className="p-4">
+                <Text className="text-lg font-semibold text-indigo-600">
                   {item.name}
                 </Text>
-                <Text
-                  style={{
-                    color: '#555',
-                    fontStyle: 'italic',
-                    fontWeight: 'bold',
-                    marginVertical: 4,
-                  }}
-                >
+                <Text className="text-gray-600 font-semibold italic my-1">
                   Breed: {item.breed}
                 </Text>
-                <Text style={{ color: '#777' }}>Sex: {item.sex}</Text>
-                <Text style={{ color: '#777' }}>
+                <Text className="text-gray-500">Sex: {item.sex}</Text>
+                <Text className="text-gray-500">
                   Health Status: {item.healthStatus}
                 </Text>
               </View>
 
-              {/* Icon button at the right */}
               <TouchableOpacity
-                onPress={() => setSelectedPet(item)}
-                style={{
-                  position: 'absolute',
-                  top: 10,
-                  right: 10,
-                  backgroundColor: '#fff',
-                  borderRadius: 16,
-                  padding: 8,
-                  shadowColor: '#000',
-                  shadowOffset: { width: 0, height: 2 },
-                  shadowOpacity: 0.3,
-                  shadowRadius: 4,
-                  elevation: 5,
+                onPress={() => {
+                  setSelectedPet(item);
+                  setModalVisible(true);
                 }}
+                className="absolute top-2 right-2 bg-white rounded-full p-2 shadow-md"
               >
                 <Ionicons name="ellipsis-vertical" size={24} color="#000" />
               </TouchableOpacity>
@@ -163,35 +132,23 @@ const PetListingScreen = () => {
           onRequestClose={() => setModalVisible(false)}
         >
           <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
-            <View
-              style={{
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: 'rgba(0, 0, 0, 0.5)',
-              }}
-            >
-              <View
-                style={{
-                  backgroundColor: '#fff',
-                  padding: 16,
-                  borderRadius: 8,
-                  width: '80%',
-                }}
-              >
+            <View className="flex-1 justify-center items-center bg-black/50">
+              <View className="bg-white p-4 rounded-lg w-4/5">
                 <TouchableOpacity
                   onPress={() =>
                     handleDetail(selectedPet._id, getImageUrl(selectedPet))
                   }
-                  style={{ paddingVertical: 8 }}
+                  className="py-2"
                 >
-                  <Text>View Details</Text>
+                  <Text className="text-center text-indigo-600">
+                    View Details
+                  </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => handleDelete(selectedPet._id)}
-                  style={{ paddingVertical: 8 }}
+                  className="py-2"
                 >
-                  <Text>Delete Pet</Text>
+                  <Text className="text-center text-red-500">Delete Pet</Text>
                 </TouchableOpacity>
               </View>
             </View>
