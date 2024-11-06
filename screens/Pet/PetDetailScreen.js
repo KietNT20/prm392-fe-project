@@ -185,6 +185,9 @@ const PetDetailScreen = () => {
             Coat Color: {pet?.coatColor}
           </Text>
           <Text className="text-base text-gray-500 mb-1">
+            Vaccinated: {pet?.vaccinated ? 'Yes' : 'No'}
+          </Text>
+          <Text className="text-base text-gray-500 mb-1">
             Health Status: {pet?.healthStatus}
           </Text>
           <Text className="text-base text-gray-500 mb-3">

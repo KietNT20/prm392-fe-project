@@ -1,4 +1,8 @@
-import { createDrawerNavigator } from '@react-navigation/drawer';
+import {
+  createDrawerNavigator,
+  DrawerContentScrollView,
+  DrawerItemList,
+} from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
@@ -14,14 +18,48 @@ import PetListingScreen from './screens/Pet/PetListingScreen';
 import SplashScreen from './screens/SplashScreen/SplashScreen';
 import LoginScreen from './screens/UserScreen/LoginScreen';
 import RegisterScreen from './screens/UserScreen/RegisterScreen';
+import { useLogout } from './hooks/useAuth';
+import { Alert, Text, View } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
+function CustomDrawerContent(props) {
+  const { logout } = useLogout();
+
+  const handleLogout = () => {
+    Alert.alert('Logout', 'Are you sure you want to logout?', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Logout',
+        style: 'destructive',
+        onPress: logout,
+      },
+    ]);
+  };
+
+  return (
+    <DrawerContentScrollView {...props}>
+      <DrawerItemList {...props} />
+      <View className="mt-5 px-4">
+        <TouchableOpacity
+          className="bg-red-600 p-3 rounded-lg"
+          onPress={handleLogout}
+        >
+          <Text className="text-white text-center font-bold">Logout</Text>
+        </TouchableOpacity>
+      </View>
+    </DrawerContentScrollView>
+  );
+}
 
 // Drawer Navigator for authenticated users
 function DrawerNavigator() {
   return (
-    <Drawer.Navigator initialRouteName="Home">
+    <Drawer.Navigator
+      initialRouteName="Home"
+      drawerContent={(props) => <CustomDrawerContent {...props} />}
+    >
       <Drawer.Screen name="Home" component={HomeScreen} />
       <Drawer.Screen name="AddPet" component={AddPetScreen} />
       <Drawer.Screen name="Donation" component={DonationScreen} />
