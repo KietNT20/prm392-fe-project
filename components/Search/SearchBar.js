@@ -222,6 +222,7 @@ export default function PetSearchBar({ onSearch }) {
                       borderColor: '#4f46e5',
                       borderWidth: 1,
                       color: '#4f46e5',
+                      marginRight: 8,
                     }}
                     keyboardType={keyboardType}
                   />

@@ -4,14 +4,16 @@ import axios from 'axios';
 
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
-  timeout: 10000,
+  timeout: 5000,
 });
 
 // Add a request interceptor
 axiosInstance.interceptors.request.use(
-  (config) => {
+  async (config) => {
     // Do something before request is sent
-    config.headers.Authorization = `Bearer ${storageMethod.get().token}`;
+    const token = await storageMethod.get();
+    // console.log('token config', token);
+    config.headers.Authorization = `Bearer ${token?.token}`;
     return config;
   },
   function (error) {

@@ -1,25 +1,30 @@
-import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  Image,
-  Alert,
-  TouchableOpacity,
-  Button,
-  TextInput,
-  ScrollView,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { useAddCartPet } from '@/hooks/CartPet';
 import { usePetDetail, useUpdatePet } from '@/hooks/Pet';
+import { Ionicons } from '@expo/vector-icons';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { useEffect, useState } from 'react';
+import {
+  Alert,
+  Button,
+  Image,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
-const PetDetailScreen = ({ route, navigation }) => {
-  const { petId, imageUrl } = route.params;
-  const { pet, isLoading, isError, error } = usePetDetail(petId);
-  const updatePetMutation = useUpdatePet();
-
+const PetDetailScreen = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [editablePet, setEditablePet] = useState(pet);
-  const [originalPet, setOriginalPet] = useState(null); // Store the original pet data to restore on cancel
+  const [originalPet, setOriginalPet] = useState(null);
+  const navigation = useNavigation();
+  const route = useRoute();
+  const { petId, imageUrl } = route.params;
+  const { pet } = usePetDetail(petId);
+  const updatePetMutation = useUpdatePet();
+
+  const { addCartPet } = useAddCartPet();
 
   useEffect(() => {
     if (pet) {
@@ -35,6 +40,11 @@ const PetDetailScreen = ({ route, navigation }) => {
   // Handle changes in TextInput fields
   const handleInputChange = (key, value) => {
     setEditablePet({ ...editablePet, [key]: value });
+  };
+
+  const handleRequestAdoption = () => {
+    Alert.alert('Adoption process started');
+    navigation.navigate('Adoption');
   };
 
   // Handle canceling the edit and revert to original data
@@ -188,7 +198,7 @@ const PetDetailScreen = ({ route, navigation }) => {
 
       <Button
         title="Start Adoption Process"
-        onPress={() => Alert.alert('Adoption process started')}
+        onPress={() => handleRequestAdoption()}
         color="#6c63ff"
       />
       <View className="mt-5 mb-10">

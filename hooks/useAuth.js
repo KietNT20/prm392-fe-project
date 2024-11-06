@@ -7,16 +7,11 @@ import storageMethod from 'utils/storageMethod';
 export const useRegister = () => {
   const navigation = useNavigation();
   const mutation = useMutation({
+    mutationKey: 'register',
     mutationFn: (data) => authServices.registerUser(data),
     onSuccess: async (response) => {
       console.log('Registration success:', response);
-      setTimeout(async () => {
-        await storageMethod.set({ token: response.token });
-        // Navigate to Home screen or show success message
-        Alert.alert('Registration Successful!', 'Welcome to PawFund!', [
-          { text: 'OK', onPress: () => navigation.navigate('Login') },
-        ]);
-      }, 500);
+      navigation.navigate('Login');
     },
     onError: (error) => {
       console.log('Registration error', error);
@@ -25,25 +20,26 @@ export const useRegister = () => {
   });
 
   return {
-    registerUser: mutation.mutate, // Ensure the registerUser is returned correctly
-    isLoading: mutation.isLoading,
-    ...mutation,
+    registerUser: mutation.mutate,
+    isLoading: mutation.isPending,
   };
 };
 
+// Hook đăng nhập
 export const useLogin = () => {
   const navigation = useNavigation();
-  const { mutate, ...rest } = useMutation({
+  const { mutate: login, ...rest } = useMutation({
     mutationKey: ['login'],
     mutationFn: ({ identifier, password }) =>
       authServices.loginUser({ identifier, password }),
     onSuccess: async (response) => {
+      console.log('response', response);
       try {
         console.log('Login success', response);
         if (response) {
           await storageMethod.set({ token: response.token });
           // Navigate trực tiếp đến DrawerScreens
-          navigation.navigate('Drawer');
+          navigation.navigate('Main');
         }
       } catch (error) {
         console.error('Error handling login:', error);
@@ -61,12 +57,13 @@ export const useLogin = () => {
       );
     },
   });
-
-  return { mutate, ...rest };
+  return { login, ...rest };
 };
 
+// Hook đăng xuất
 export const useLogout = () => {
   const navigation = useNavigation();
+
   const logout = async () => {
     try {
       await storageMethod.remove();

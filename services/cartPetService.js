@@ -1,5 +1,5 @@
-import { API } from "@/api/apiUrl";
-import axiosInstance from "@/config/axiosConfig";
+import { API } from '@/api/apiUrl';
+import axiosInstance from '@/config/axiosConfig';
 
 export const cartPetService = {
   getAllCartPets() {

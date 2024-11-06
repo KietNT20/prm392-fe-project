@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  Image,
-  ActivityIndicator,
-  Modal,
-  TouchableWithoutFeedback,
-  Alert,
-} from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons';
-import { useDeletePet, useGetAllPets } from '@/hooks/Pet';
 import PetSearchBar from '@/components/Search/SearchBar';
+import { useDeletePet, useGetAllPets } from '@/hooks/Pet';
+import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { useEffect, useState } from 'react';
+import {
+  ActivityIndicator,
+  Alert,
+  FlatList,
+  Image,
+  Modal,
+  Text,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 
 const PetListingScreen = () => {
   const navigation = useNavigation();
