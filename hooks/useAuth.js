@@ -48,7 +48,7 @@ export const useLogin = () => {
       console.log('response', response);
       try {
         await storageMethod.set({ token: response.token });
-        navigation.navigate('Drawer');
+        navigation.navigate('Main');
       } catch (error) {
         Alert.alert('Lỗi', 'Có lỗi xảy ra khi lưu thông tin đăng nhập');
       }

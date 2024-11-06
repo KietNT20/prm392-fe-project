@@ -16,8 +16,9 @@ export function AuthProvider({ children }) {
 
   const checkAuthStatus = async () => {
     try {
-      const token = await storageMethod.get('token');
-      setUserToken(token);
+      const token = await storageMethod.get();
+      console.log('token auth context', token);
+      setUserToken(token?.token);
     } catch (error) {
       console.error('Error checking auth status:', error);
     } finally {
