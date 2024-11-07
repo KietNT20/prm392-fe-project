@@ -1,7 +1,10 @@
 import { useAuthContext } from '@/context/AuthContext';
+import { handleGetProfile } from '@/store/reducers/userProfile.reducer';
 import { useNavigation } from '@react-navigation/native';
 import { useMutation } from '@tanstack/react-query';
+import { jwtDecode } from 'jwt-decode';
 import { Alert, ToastAndroid } from 'react-native';
+import { useDispatch } from 'react-redux';
 import { authServices } from 'services/authServices';
 import storageMethod from 'utils/storageMethod';
 
@@ -30,6 +33,7 @@ export const useRegister = () => {
 // useLogin.js
 export const useLogin = () => {
   const { updateToken } = useAuthContext();
+  const dispatch = useDispatch();
 
   const { mutate: login, ...rest } = useMutation({
     mutationKey: ['login'],
@@ -40,6 +44,7 @@ export const useLogin = () => {
         if (response && response.token) {
           await storageMethod.set({ token: response.token });
           updateToken(response.token);
+          dispatch(handleGetProfile(jwtDecode(response.token)));
           ToastAndroid.show('Login successful', ToastAndroid.TOP);
         }
       } catch (error) {
