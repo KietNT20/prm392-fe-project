@@ -16,4 +16,5 @@ export const API = {
   ADD_NEWS: 'news/add/',
   NEWS_DETAIL: 'news/',
   NEWS_QUERY: 'news/query',
+  ADOPT_REQ: 'adoption-request',
 };

@@ -1,5 +1,6 @@
+import { useCreateAdoptionRequest } from '@/hooks/AdoptionRequest';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useRoute } from '@react-navigation/native';
 import { Button, Card, Input } from '@rneui/themed';
 import { useState } from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
@@ -19,7 +20,10 @@ const AdoptPetScreen = () => {
     address: '',
   });
 
-  const navigation = useNavigation();
+  const { createAdoptionReq } = useCreateAdoptionRequest();
+  const route = useRoute();
+  const { petId } = route.params;
+  console.log('Pet ID:', petId);
 
   const validateForm = () => {
     let isValid = true;
@@ -68,6 +72,14 @@ const AdoptPetScreen = () => {
     if (validateForm()) {
       console.log('Form submitted:', formData);
       // Add your submission logic here
+      createAdoptionReq({
+        petId: 'petId',
+        userId: 'userId',
+        name: formData.name,
+        address: formData.address,
+        phoneNumber: formData.phoneNumber,
+        cccd: formData.cccd,
+      });
     }
   };
 
