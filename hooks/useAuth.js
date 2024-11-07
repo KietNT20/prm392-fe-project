@@ -1,29 +1,26 @@
-// hooks/useAuth.js
-import { authServices } from '@/services/authServices';
-import storageMethod from '@/utils/storageMethod';
+import { useAuthContext } from '@/context/AuthContext';
+import { handleGetProfile } from '@/store/reducers/userProfile.reducer';
 import { useNavigation } from '@react-navigation/native';
 import { useMutation } from '@tanstack/react-query';
-import { Alert } from 'react-native';
+import { jwtDecode } from 'jwt-decode';
+import { Alert, ToastAndroid } from 'react-native';
+import { useDispatch } from 'react-redux';
+import { authServices } from 'services/authServices';
+import storageMethod from 'utils/storageMethod';
 
-// Hook đăng ký
 export const useRegister = () => {
   const navigation = useNavigation();
   const mutation = useMutation({
     mutationKey: 'register',
     mutationFn: (data) => authServices.registerUser(data),
     onSuccess: async (response) => {
-      console.log('response', response);
-      try {
-        await storageMethod.set({ token: response.token });
-        Alert.alert('Đăng ký thành công!', 'Chào mừng bạn đến với PawFund!', [
-          { text: 'OK', onPress: () => navigation.navigate('Login') },
-        ]);
-      } catch (error) {
-        Alert.alert('Lỗi', 'Có lỗi xảy ra khi lưu thông tin đăng nhập');
-      }
+      console.log('Register success:', response);
+      ToastAndroid.show('Register successful', ToastAndroid.TOP);
+      navigation.navigate('Login');
     },
     onError: (error) => {
-      Alert.alert('Đăng ký thất bại', error.message || 'Vui lòng thử lại.');
+      console.log('Registration error', error);
+      Alert.alert('Registration Failed', error.message || 'Please try again.');
     },
   });
 
@@ -33,46 +30,60 @@ export const useRegister = () => {
   };
 };
 
-// Hook đăng nhập
+// useLogin.js
 export const useLogin = () => {
-  const navigation = useNavigation();
-  const {
-    mutate: login,
-    isPending: isLoading,
-    ...rest
-  } = useMutation({
-    mutationKey: 'login',
+  const { updateToken } = useAuthContext();
+  const dispatch = useDispatch();
+
+  const { mutate: login, ...rest } = useMutation({
+    mutationKey: ['login'],
     mutationFn: ({ identifier, password }) =>
       authServices.loginUser({ identifier, password }),
     onSuccess: async (response) => {
-      console.log('response', response);
       try {
-        await storageMethod.set({ token: response.token });
-        navigation.navigate('Drawer');
+        if (response && response.token) {
+          await storageMethod.set({ token: response.token });
+          updateToken(response.token);
+          dispatch(handleGetProfile(jwtDecode(response.token)));
+          ToastAndroid.show('Login successful', ToastAndroid.TOP);
+        }
       } catch (error) {
-        Alert.alert('Lỗi', 'Có lỗi xảy ra khi lưu thông tin đăng nhập');
+        console.error('Error handling login:', error);
+        Alert.alert(
+          'Login Error',
+          'There was an error while logging in. Please try again.',
+        );
       }
     },
     onError: (error) => {
+      console.log('Login error', error);
       Alert.alert(
-        'Đăng nhập thất bại',
-        error.message || 'Thông tin đăng nhập không chính xác',
+        'Login Failed',
+        error?.message || 'Invalid credentials. Please try again.',
       );
     },
   });
-  return { login, isLoading, ...rest };
+
+  return { login, ...rest };
 };
 
 // Hook đăng xuất
 export const useLogout = () => {
   const navigation = useNavigation();
+  const { clearToken } = useAuthContext();
 
   const logout = async () => {
     try {
       await storageMethod.remove();
+      clearToken();
+      ToastAndroid.show('Logout successful', ToastAndroid.TOP);
       navigation.replace('Login');
     } catch (error) {
-      Alert.alert('Lỗi', 'Có lỗi xảy ra khi đăng xuất. Vui lòng thử lại.');
+      console.error('Logout error:', error);
+      Alert.alert(
+        'Logout Error',
+        'There was an error while logging out. Please try again.',
+      );
     }
   };
 

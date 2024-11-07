@@ -1,14 +1,19 @@
-import { createDrawerNavigator } from '@react-navigation/drawer';
+// RootNavigator.js
+import {
+  createDrawerNavigator,
+  DrawerContentScrollView,
+  DrawerItemList,
+} from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { ActivityIndicator, View } from 'react-native';
-
-// Import your screens
-import { useContext } from 'react';
-import { AuthContext } from './context/AuthContext';
+import { Alert, Text, TouchableOpacity, View } from 'react-native';
+import { useAuthContext } from './context/AuthContext';
+import { useLogout } from './hooks/useAuth';
 import AdoptPetScreen from './screens/AdoptPetScreen/AdoptPetScreen';
-import DonationScreen from './screens/DonateScreen/DonateScreen';
+import DonateScreen from './screens/DonateScreen/DonateScreen';
 import HomeScreen from './screens/HomeScreen/HomeScreen';
+import NewDetailScreen from './screens/New/NewDetailScreen';
+import NewListingScreen from './screens/New/NewListingScreen';
 import AddPetScreen from './screens/Pet/AddPetScreen';
 import PetDetailScreen from './screens/Pet/PetDetailScreen';
 import PetListingScreen from './screens/Pet/PetListingScreen';
@@ -18,27 +23,55 @@ import RegisterScreen from './screens/UserScreen/RegisterScreen';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
-const AuthStack = createStackNavigator();
 
-// Auth Stack Navigator for Login/Register
-function AuthNavigator() {
+function CustomDrawerContent(props) {
+  const { logout } = useLogout();
+  const handleLogout = () => {
+    Alert.alert('Logout', 'Are you sure you want to logout?', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Logout',
+        style: 'destructive',
+        onPress: logout,
+      },
+    ]);
+  };
+
   return (
-    <AuthStack.Navigator screenOptions={{ headerShown: false }}>
-      <AuthStack.Screen name="Welcome" component={SplashScreen} />
-      <AuthStack.Screen name="Login" component={LoginScreen} />
-      <AuthStack.Screen name="Register" component={RegisterScreen} />
-    </AuthStack.Navigator>
+    <DrawerContentScrollView {...props}>
+      <DrawerItemList {...props} />
+      <View className="mt-5 px-4">
+        <TouchableOpacity
+          className="bg-red-600 p-3 rounded-lg"
+          onPress={handleLogout}
+        >
+          <Text className="text-white text-center font-bold">Logout</Text>
+        </TouchableOpacity>
+      </View>
+    </DrawerContentScrollView>
   );
 }
 
 // Drawer Navigator for authenticated users
 function DrawerNavigator() {
   return (
-    <Drawer.Navigator initialRouteName="Home">
+    <Drawer.Navigator
+      initialRouteName="Home"
+      drawerContent={(props) => <CustomDrawerContent {...props} />}
+    >
       <Drawer.Screen name="Home" component={HomeScreen} />
       <Drawer.Screen name="AddPet" component={AddPetScreen} />
-      <Drawer.Screen name="Donation" component={DonationScreen} />
+      <Drawer.Screen name="Donation" component={DonateScreen} />
       <Drawer.Screen name="Pet" component={PetListingScreen} />
+      <Drawer.Screen name="New" component={NewListingScreen} />
+      <Drawer.Screen
+        name="NewDetail"
+        component={NewDetailScreen}
+        options={{
+          headerShown: false,
+          drawerItemStyle: { display: 'none' },
+        }}
+      />
       <Drawer.Screen
         name="PetDetail"
         component={PetDetailScreen}
@@ -53,29 +86,25 @@ function DrawerNavigator() {
 
 // Main App Navigator with Authentication State
 function RootNavigator() {
-  const { isLoading, userToken } = useContext(AuthContext);
-
-  if (isLoading) {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" color="#0000ff" />
-      </View>
-    );
-  }
+  const { userToken } = useAuthContext();
 
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {userToken == null ? (
-          <Stack.Screen name="Auth" component={AuthNavigator} />
+        <Stack.Screen name="Welcome" component={SplashScreen} />
+        {userToken ? (
+          <>
+            <Stack.Screen
+              name="App"
+              component={DrawerNavigator}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen name="Adoption" component={AdoptPetScreen} />
+          </>
         ) : (
           <>
-            <Stack.Screen name="Drawer" component={DrawerNavigator} />
-            <Stack.Screen
-              name="Adoption"
-              component={AdoptPetScreen}
-              options={{ headerShown: true }}
-            />
+            <Stack.Screen name="Login" component={LoginScreen} />
+            <Stack.Screen name="Register" component={RegisterScreen} />
           </>
         )}
       </Stack.Navigator>

@@ -9,9 +9,11 @@ const axiosInstance = axios.create({
 
 // Add a request interceptor
 axiosInstance.interceptors.request.use(
-  (config) => {
+  async (config) => {
     // Do something before request is sent
-    config.headers.Authorization = `Bearer ${storageMethod.get().token}`;
+    const token = await storageMethod.get();
+    // console.log('token config', token);
+    config.headers.Authorization = `Bearer ${token?.token}`;
     return config;
   },
   function (error) {

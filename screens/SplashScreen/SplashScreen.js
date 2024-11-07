@@ -1,3 +1,4 @@
+import { useAuthContext } from '@/context/AuthContext';
 import storageMethod from '@/utils/storageMethod';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
@@ -7,6 +8,7 @@ import { Animated, Text, View } from 'react-native';
 const SplashScreen = () => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const navigation = useNavigation();
+  const { updateToken } = useAuthContext();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -14,7 +16,7 @@ const SplashScreen = () => {
       // Start the fade-in animation
       Animated.timing(fadeAnim, {
         toValue: 1,
-        duration: 2000,
+        duration: 1500,
         useNativeDriver: true,
       }).start();
 
@@ -22,21 +24,23 @@ const SplashScreen = () => {
         // Check for authentication token while animation is running
         const token = await storageMethod.get();
         // Wait for both animation and minimum splash duration
-        setTimeout(async () => {
-          if (token) {
-            navigation.navigate('Drawer');
+        setTimeout(() => {
+          if (token?.token) {
+            // Just navigate to Login screen, the RootNavigator will handle the redirection
+            updateToken(token.token);
+            navigation.navigate('App');
           } else {
-            navigation.navigate('Login');
+            navigation.replace('Login');
           }
           setIsLoading(false);
-        }, 2000); // Minimum splash screen duration
+        }, 1500); // Minimum splash screen duration
       } catch (error) {
         console.error('Auth check failed:', error);
-        // If there's an error, navigate to Auth stack
+        // If there's an error, navigate to Login screen
         setTimeout(() => {
-          navigation.navigate('Login');
+          navigation.replace('Login');
           setIsLoading(false);
-        }, 2000);
+        }, 1500);
       }
     };
 
