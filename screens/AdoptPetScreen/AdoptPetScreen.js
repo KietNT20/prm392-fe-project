@@ -36,10 +36,10 @@ const AdoptPetScreen = () => {
 
     // Validate CCCD (12 digits)
     if (!formData.cccd) {
-      newErrors.cccd = 'CCCD is required';
+      newErrors.cccd = 'IC is required';
       isValid = false;
     } else if (!/^\d{12}$/.test(formData.cccd)) {
-      newErrors.cccd = 'CCCD must be exactly 12 digits';
+      newErrors.cccd = 'IC must be exactly 12 digits';
       isValid = false;
     }
 
@@ -88,7 +88,7 @@ const AdoptPetScreen = () => {
       <Card containerStyle={styles.card}>
         <Card.Title style={styles.title}>Pet Adoption Application</Card.Title>
         <Input
-          placeholder="CCCD"
+          placeholder="IC Number"
           leftIcon={<Ionicons name="card" size={24} color="#86939e" />}
           value={formData.cccd}
           onChangeText={(text) => setFormData({ ...formData, cccd: text })}
