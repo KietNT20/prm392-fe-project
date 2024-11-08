@@ -1,6 +1,6 @@
 import { adoptionRequestService } from '@/services/adoptionRequestService';
 import { useNavigation } from '@react-navigation/native';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Alert, ToastAndroid } from 'react-native';
 
 export const useCreateAdoptionRequest = () => {
@@ -28,4 +28,51 @@ export const useCreateAdoptionRequest = () => {
     },
   });
   return { createAdoptionReq, ...rest };
+};
+
+export const useGetAllAdoptionRequests = () => {
+  const {
+    data: adoptionRequests,
+    error,
+    isLoading,
+  } = useQuery({
+    queryKey: ['adoptionRequests'],
+    queryFn: adoptionRequestService.getAdoptReq,
+    onError: (error) => {
+      Alert.alert('Error', error.message);
+    },
+  });
+
+  return { adoptionRequests, error, isLoading };
+};
+
+export const useUpdateAdoptionRequestStatus = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, status }) => {
+      try {
+        const response = await adoptionRequestService.updateAdoptRegStatus({
+          id,
+          status,
+        });
+        return response.data; // Ensure response.data contains the expected response
+      } catch (error) {
+        throw new Error(error);
+      }
+    },
+
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: ['adoptionRequests'],
+      });
+      // Show success message
+      ToastAndroid.show('Status updated successfully', ToastAndroid.TOP);
+      console.log('Status updated successfully:', data);
+    },
+    onError: (error) => {
+      // Show error alert if mutation fails
+      Alert.alert('Error', error.message);
+      console.error('Error updating status:', error);
+    },
+  });
 };
