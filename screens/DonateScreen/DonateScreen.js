@@ -10,7 +10,7 @@ import {
 import { Button, Input } from 'react-native-elements';
 import { Ionicons } from '@expo/vector-icons';
 
-const DonationScreen = ({ navigation }) => {
+const DonateScreen = ({ navigation }) => {
   const [amount, setAmount] = useState('');
 
   const handleDonate = () => {
@@ -84,4 +84,4 @@ const DonationScreen = ({ navigation }) => {
   );
 };
 
-export default DonationScreen;
+export default DonateScreen;

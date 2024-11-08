@@ -1,4 +1,3 @@
-import { useAddCartPet } from '@/hooks/CartPet';
 import { usePetDetail, useUpdatePet } from '@/hooks/Pet';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -24,8 +23,6 @@ const PetDetailScreen = () => {
   const { pet } = usePetDetail(petId);
   const updatePetMutation = useUpdatePet();
 
-  const { addCartPet } = useAddCartPet();
-
   useEffect(() => {
     if (pet) {
       setEditablePet(pet);
@@ -44,7 +41,10 @@ const PetDetailScreen = () => {
 
   const handleRequestAdoption = () => {
     Alert.alert('Adoption process started');
-    navigation.navigate('Adoption');
+    navigation.navigate('Adoption', {
+      petId: petId,
+      petName: pet.name,
+    });
   };
 
   // Handle canceling the edit and revert to original data

@@ -12,9 +12,7 @@ export const authServices = {
   },
 
   // Function to fetch user data by ID
-  fetchUserData(userId, token) {
-    return axiosInstance.get(`${API.USER_BY_ID}${userId}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+  getUserDetails(userId) {
+    return axiosInstance.get(API.USER_BY_ID + userId);
   },
 };
