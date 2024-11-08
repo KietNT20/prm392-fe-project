@@ -12,12 +12,14 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { useSelector } from 'react-redux';
 
 const PetDetailScreen = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [editablePet, setEditablePet] = useState(pet);
   const [originalPet, setOriginalPet] = useState(null);
   const [showDialog, setShowDialog] = useState(false);
+  const { profile } = useSelector((state) => state.userProfile);
 
   const navigation = useNavigation();
   const route = useRoute();
@@ -111,7 +113,12 @@ const PetDetailScreen = () => {
             </TouchableOpacity>
           </View>
         ) : (
-          <View className="absolute top-12 right-5 flex-row z-10">
+          <View
+            className="absolute top-12 right-5 flex-row z-10"
+            style={{
+              display: profile?.role === 'admin' ? 'flex' : 'none',
+            }}
+          >
             <TouchableOpacity
               className=" bg-yellow-400 p-2 rounded-full shadow-md"
               onPress={toggleEditMode}
@@ -285,8 +292,8 @@ const PetDetailScreen = () => {
         <Dialog.Title title="Confirm Logout" />
         <Text>Are you sure you want request adopt this pet?</Text>
         <Dialog.Actions>
-          <Dialog.Button title="OK" onPress={handleConfirmDialog} />
-          <Dialog.Button title="Cancel" onPress={handleCancelDialog} />
+          <Dialog.Button title="OK" onPress={() => handleConfirmDialog()} />
+          <Dialog.Button title="Cancel" onPress={() => handleCancelDialog()} />
         </Dialog.Actions>
       </Dialog>
     </ScrollView>
