@@ -1,15 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import { useGetUserDetails, useLogout } from '@/hooks/useAuth';
+import { Ionicons } from '@expo/vector-icons';
+import { Button, Dialog } from '@rneui/themed';
+import { useEffect, useState } from 'react';
 import {
-  View,
-  TextInput,
-  TouchableOpacity,
-  Text,
   ActivityIndicator,
   Alert,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { useSelector } from 'react-redux';
-import { useGetUserDetails } from '@/hooks/useAuth';
-import { Ionicons } from '@expo/vector-icons';
 
 const ProfileScreen = () => {
   const [formData, setFormData] = useState({
@@ -24,11 +25,13 @@ const ProfileScreen = () => {
     confirmPassword: '',
   });
   const [activeSection, setActiveSection] = useState('info'); // 'info' or 'password'
+  const [showLogoutDialog, setShowLogoutDialog] = useState(false);
 
   const { profile } = useSelector((state) => state.userProfile);
   const { getUserDetailsData, isLoading, error } = useGetUserDetails(
     profile.id,
   );
+  const { logout } = useLogout();
 
   useEffect(() => {
     if (getUserDetailsData?.data) {
@@ -52,6 +55,19 @@ const ProfileScreen = () => {
     setFormData({ ...formData, [field]: value });
   const handlePasswordChange = (field, value) =>
     setPasswordData({ ...passwordData, [field]: value });
+
+  const handleLogoutPress = () => {
+    setShowLogoutDialog(true);
+  };
+
+  const handleConfirmLogout = () => {
+    setShowLogoutDialog(false);
+    logout();
+  };
+
+  const handleCancelLogout = () => {
+    setShowLogoutDialog(false);
+  };
 
   const handlePasswordReset = () => {
     const { oldPassword, newPassword, confirmPassword } = passwordData;
@@ -87,7 +103,7 @@ const ProfileScreen = () => {
             style={{
               color: activeSection === 'info' ? '#fff' : '#4f46e5',
               fontWeight: 'bold',
-              textAlign: 'center', // Center text within the button
+              textAlign: 'center',
             }}
           >
             Info
@@ -107,7 +123,7 @@ const ProfileScreen = () => {
             style={{
               color: activeSection === 'password' ? '#fff' : '#4f46e5',
               fontWeight: 'bold',
-              textAlign: 'center', // Center text within the button
+              textAlign: 'center',
             }}
           >
             Password Reset
@@ -185,6 +201,16 @@ const ProfileScreen = () => {
           </TouchableOpacity>
         </>
       )}
+      <Button title="Logout" onPress={handleLogoutPress} color="error" />
+
+      <Dialog isVisible={showLogoutDialog} onBackdropPress={handleCancelLogout}>
+        <Dialog.Title title="Confirm Logout" />
+        <Text>Are you sure you want to logout?</Text>
+        <Dialog.Actions>
+          <Dialog.Button title="OK" onPress={handleConfirmLogout} />
+          <Dialog.Button title="Cancel" onPress={handleCancelLogout} />
+        </Dialog.Actions>
+      </Dialog>
     </View>
   );
 };

@@ -25,9 +25,9 @@ const PetListingScreen = () => {
   const { mutate: deletePet } = useDeletePet();
 
   useEffect(() => {
-    if (isLoading) console.log('Fetching pets...');
+    if (isLoading) // console.log('Fetching pets...');
     if (isError) console.error('Error fetching pets:', error);
-    if (pets) console.log('Fetched pets:', pets);
+    if (pets) // console.log('Fetched pets:', pets);
   }, [isLoading, isError, pets]);
 
   const handleDelete = (petId) => {
@@ -39,7 +39,7 @@ const PetListingScreen = () => {
         onPress: () => {
           deletePet(petId, {
             onSuccess: () => {
-              console.log('Pet deleted successfully:', petId);
+              // console.log('Pet deleted successfully:', petId);
             },
             onError: (error) => {
               console.error('Error deleting pet:', error);

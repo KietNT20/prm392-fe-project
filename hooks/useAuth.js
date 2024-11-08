@@ -1,5 +1,8 @@
 import { useAuthContext } from '@/context/AuthContext';
-import { handleGetProfile } from '@/store/reducers/userProfileReducer';
+import {
+  clearProfile,
+  handleSaveProfile,
+} from '@/store/reducers/userProfileReducer';
 import { useNavigation } from '@react-navigation/native';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { jwtDecode } from 'jwt-decode';
@@ -14,12 +17,12 @@ export const useRegister = () => {
     mutationKey: 'register',
     mutationFn: (data) => authServices.registerUser(data),
     onSuccess: async (response) => {
-      console.log('Register success:', response);
+      // console.log('Register success:', response);
       ToastAndroid.show('Register successful', ToastAndroid.TOP);
       navigation.navigate('Login');
     },
     onError: (error) => {
-      console.log('Registration error', error);
+      // console.log('Registration error', error);
       Alert.alert('Registration Failed', error.message || 'Please try again.');
     },
   });
@@ -40,10 +43,10 @@ export const useLogin = () => {
       authServices.loginUser({ identifier, password }),
     onSuccess: async (response) => {
       try {
-        if (response && response.token) {
+        if (response) {
           await storageMethod.set({ token: response.token });
+          dispatch(handleSaveProfile(jwtDecode(response.token)));
           updateToken(response.token);
-          dispatch(handleGetProfile(jwtDecode(response.token)));
           ToastAndroid.show('Login successful', ToastAndroid.TOP);
         }
       } catch (error) {
@@ -55,7 +58,7 @@ export const useLogin = () => {
       }
     },
     onError: (error) => {
-      console.log('Login error', error);
+      // console.log('Login error', error);
       Alert.alert(
         'Login Failed',
         error?.message || 'Invalid credentials. Please try again.',
@@ -70,11 +73,13 @@ export const useLogin = () => {
 export const useLogout = () => {
   const navigation = useNavigation();
   const { clearToken } = useAuthContext();
+  const dispatch = useDispatch();
 
   const logout = async () => {
     try {
       await storageMethod.remove();
       clearToken();
+      dispatch(clearProfile());
       ToastAndroid.show('Logout successful', ToastAndroid.TOP);
       navigation.replace('Login');
     } catch (error) {
