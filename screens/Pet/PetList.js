@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, FlatList, TouchableOpacity, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-// New pets data structure
+
 const pets = [
   {
     id: '1',
@@ -11,7 +11,7 @@ const pets = [
     breed: 'Labrador',
     vaccinated: true,
     healthStatus: 'Healthy',
-    image_id: 'https://via.placeholder.com/150', // Sample image URL
+    image_id: 'https://via.placeholder.com/150', 
   },
   {
     id: '2',
@@ -20,7 +20,7 @@ const pets = [
     breed: 'Golden Retriever',
     vaccinated: true,
     healthStatus: 'Healthy',
-    image_id: 'https://via.placeholder.com/150', // Sample image URL
+    image_id: 'https://via.placeholder.com/150', 
   },
 ];
 
@@ -34,22 +34,27 @@ const PetListingsScreen = () => {
       renderItem={({ item }) => (
         <TouchableOpacity
           onPress={() => navigation.navigate('PetDetail', { pet: item })}
-          className="bg-white shadow-md rounded-lg p-4 m-2 flex flex-row items-center"
+          className="bg-white shadow-lg rounded-xl overflow-hidden m-3 flex flex-row items-center border border-gray-200"
+          style={{ elevation: 4 }} 
         >
-          <Image
-            source={{ uri: item.image_id }}
-            className="w-16 h-16 rounded-full"
-          />
-          <View className="ml-4">
-            <Text className="text-xl font-bold text-indigo-800">
+          <View className="relative w-20 h-20 ml-2">
+            <Image
+              source={{ uri: item.image_id }}
+              className="w-full h-full rounded-full object-cover"
+            />
+            <View className="absolute inset-0 bg-gradient-to-tr from-black/30 to-transparent rounded-full" />
+          </View>
+          <View className="ml-5 flex-1 py-4">
+            <Text className="text-lg font-semibold text-indigo-800 mb-1 tracking-wide">
               {item.name}
             </Text>
-            <Text className="text-gray-600">{item.breed}</Text>
-            <Text className="text-gray-500">{item.sex}</Text>
+            <Text className="text-gray-600 text-base mb-1">{item.breed}</Text>
+            <Text className="text-gray-500 text-sm">{item.sex}</Text>
           </View>
         </TouchableOpacity>
       )}
-      className="bg-gray-100 p-4"
+      contentContainerStyle={{ paddingVertical: 10 }}
+      className="bg-gray-50"
     />
   );
 };
