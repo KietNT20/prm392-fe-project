@@ -27,7 +27,7 @@ const AdoptPetScreen = () => {
   console.log('User Profile:', profile);
 
   const { petId } = route.params;
-  console.log('Pet ID:', petId);
+  // console.log('Pet ID:', petId);
 
   const validateForm = () => {
     let isValid = true;
@@ -77,8 +77,8 @@ const AdoptPetScreen = () => {
       console.log('Form submitted:', formData);
       // Add your submission logic here
       createAdoptionReq({
-        petId: 'petId',
-        userId: 'userId',
+        petId: petId,
+        userId: profile.id,
         name: formData.name,
         address: formData.address,
         phoneNumber: formData.phoneNumber,

@@ -1,5 +1,8 @@
 import { useAuthContext } from '@/context/AuthContext';
-import { handleGetProfile } from '@/store/reducers/userProfileReducer';
+import {
+  clearProfile,
+  handleSaveProfile,
+} from '@/store/reducers/userProfileReducer';
 import { useNavigation } from '@react-navigation/native';
 import { useMutation } from '@tanstack/react-query';
 import { jwtDecode } from 'jwt-decode';
@@ -40,10 +43,10 @@ export const useLogin = () => {
       authServices.loginUser({ identifier, password }),
     onSuccess: async (response) => {
       try {
-        if (response && response.token) {
+        if (response) {
           await storageMethod.set({ token: response.token });
+          dispatch(handleSaveProfile(jwtDecode(response.token)));
           updateToken(response.token);
-          dispatch(handleGetProfile(jwtDecode(response.token)));
           ToastAndroid.show('Login successful', ToastAndroid.TOP);
         }
       } catch (error) {
@@ -70,11 +73,13 @@ export const useLogin = () => {
 export const useLogout = () => {
   const navigation = useNavigation();
   const { clearToken } = useAuthContext();
+  const dispatch = useDispatch();
 
   const logout = async () => {
     try {
       await storageMethod.remove();
       clearToken();
+      dispatch(clearProfile());
       ToastAndroid.show('Logout successful', ToastAndroid.TOP);
       navigation.replace('Login');
     } catch (error) {

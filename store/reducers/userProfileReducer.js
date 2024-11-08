@@ -11,8 +11,11 @@ export const userProfileSlice = createSlice({
   initialState,
   name: 'userProfile',
   reducers: {
-    handleGetProfile: (state, action) => {
+    handleSaveProfile: (state, action) => {
       state.profile = action.payload;
+    },
+    clearProfile: (state) => {
+      state.profile = null;
     },
   },
 });
@@ -20,6 +23,6 @@ export const userProfileSlice = createSlice({
 // Extract the action creators object and the reducer
 const { actions, reducer: userProfileReducer } = userProfileSlice;
 // Extract and export each action creator by name
-export const { handleGetProfile } = actions;
+export const { clearProfile, handleSaveProfile } = actions;
 // Export the reducer, either as a default or named export
 export default userProfileReducer;
