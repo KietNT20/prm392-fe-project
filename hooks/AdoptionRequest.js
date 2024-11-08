@@ -1,6 +1,6 @@
 import { adoptionRequestService } from '@/services/adoptionRequestService';
 import { useNavigation } from '@react-navigation/native';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Alert, ToastAndroid } from 'react-native';
 
 export const useCreateAdoptionRequest = () => {
@@ -45,9 +45,10 @@ export const useGetAllAdoptionRequests = () => {
 
   return { adoptionRequests, error, isLoading };
 };
+
 export const useUpdateAdoptionRequestStatus = () => {
+  const queryClient = useQueryClient();
   return useMutation({
-    mutationKey: 'updateAdoptionRequestStatus', // Key for this mutation
     mutationFn: async ({ id, status }) => {
       try {
         const response = await adoptionRequestService.updateAdoptRegStatus({
@@ -59,7 +60,11 @@ export const useUpdateAdoptionRequestStatus = () => {
         throw new Error(error);
       }
     },
+
     onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: ['adoptionRequests'],
+      });
       // Show success message
       ToastAndroid.show('Status updated successfully', ToastAndroid.TOP);
       console.log('Status updated successfully:', data);

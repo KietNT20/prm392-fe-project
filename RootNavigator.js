@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { useSelector } from 'react-redux';
 import { useAuthContext } from './context/AuthContext';
+import AdoptionRequestsScreen from './screens/AdoptPetScreen/AdoptionRequestScreen';
 import AdoptPetScreen from './screens/AdoptPetScreen/AdoptPetScreen';
 import CartDetailScreen from './screens/CartScreen/CartDetailScreen';
 import CartScreen from './screens/CartScreen/CartScreen';
@@ -18,7 +19,6 @@ import SplashScreen from './screens/SplashScreen/SplashScreen';
 import LoginScreen from './screens/UserScreen/LoginScreen';
 import ProfileScreen from './screens/UserScreen/ProfileScreen';
 import RegisterScreen from './screens/UserScreen/RegisterScreen';
-import AdoptionRequestsScreen from './screens/AdoptPetScreen/AdoptionRequestScreen';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -31,18 +31,7 @@ function DrawerNavigator() {
     <Drawer.Navigator initialRouteName="Home">
       <Drawer.Screen name="Home" component={HomeScreen} />
       <Drawer.Screen name="Profile" component={ProfileScreen} />
-      <Drawer.Screen name="AdoptionReq" component={AdoptionRequestsScreen} />
-      <Drawer.Screen
-        name="Donation"
-        component={DonateScreen}
-        options={{
-          drawerItemStyle: {
-            display: profile?.role === 'user' ? 'flex' : 'none',
-          },
-        }}
-      />
       <Drawer.Screen name="Pet" component={PetListingScreen} />
-      <Drawer.Screen name="New" component={NewListingScreen} />
       <Drawer.Screen
         name="AddPet"
         component={AddPetScreen}
@@ -53,11 +42,30 @@ function DrawerNavigator() {
         }}
       />
       <Drawer.Screen
+        name="AdoptionRequests"
+        component={AdoptionRequestsScreen}
+        options={{
+          drawerItemStyle: {
+            display: profile?.role === 'admin' ? 'flex' : 'none',
+          },
+        }}
+      />
+      <Drawer.Screen
+        name="Donation"
+        component={DonateScreen}
+        options={{
+          drawerItemStyle: {
+            display: profile?.role === 'user' ? 'flex' : 'none',
+          },
+        }}
+      />
+      <Drawer.Screen name="New" component={NewListingScreen} />
+      <Drawer.Screen
         name="Cart"
         component={CartScreen}
         options={{
           drawerItemStyle: {
-            display: profile?.role === 'admin' ? 'flex' : 'none',
+            display: profile?.role === 'user' ? 'flex' : 'none',
           },
         }}
       />
