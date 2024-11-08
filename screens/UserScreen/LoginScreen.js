@@ -22,7 +22,7 @@ const LoginScreen = ({ navigation }) => {
       return;
     }
     try {
-      console.log('Attempting login with:', { email, password });
+      // console.log('Attempting login with:', { email, password });
       await login({
         identifier: email.trim(),
         password: password.trim(),

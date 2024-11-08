@@ -24,8 +24,7 @@ const AdoptPetScreen = () => {
   const { createAdoptionReq } = useCreateAdoptionRequest();
   const route = useRoute();
   const { profile } = useSelector((state) => state.userProfile);
-  console.log('User Profile:', profile);
-
+  // console.log('User Profile:', profile);
   const { petId } = route.params;
   // console.log('Pet ID:', petId);
 
@@ -74,7 +73,7 @@ const AdoptPetScreen = () => {
 
   const handleSubmit = () => {
     if (validateForm()) {
-      console.log('Form submitted:', formData);
+      // console.log('Form submitted:', formData);
       // Add your submission logic here
       createAdoptionReq({
         petId: petId,

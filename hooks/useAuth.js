@@ -17,12 +17,12 @@ export const useRegister = () => {
     mutationKey: 'register',
     mutationFn: (data) => authServices.registerUser(data),
     onSuccess: async (response) => {
-      console.log('Register success:', response);
+      // console.log('Register success:', response);
       ToastAndroid.show('Register successful', ToastAndroid.TOP);
       navigation.navigate('Login');
     },
     onError: (error) => {
-      console.log('Registration error', error);
+      // console.log('Registration error', error);
       Alert.alert('Registration Failed', error.message || 'Please try again.');
     },
   });
@@ -58,7 +58,7 @@ export const useLogin = () => {
       }
     },
     onError: (error) => {
-      console.log('Login error', error);
+      // console.log('Login error', error);
       Alert.alert(
         'Login Failed',
         error?.message || 'Invalid credentials. Please try again.',

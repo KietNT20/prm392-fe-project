@@ -1,6 +1,5 @@
-import React from 'react';
-import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { FlatList, Text, TouchableOpacity, View } from 'react-native';
 
 const events = [
   {
