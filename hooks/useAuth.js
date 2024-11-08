@@ -1,5 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { useMutation } from '@tanstack/react-query';
+import { jwtDecode } from 'jwt-decode';
 import { Alert } from 'react-native';
 import { authServices } from 'services/authServices';
 import storageMethod from 'utils/storageMethod';
@@ -33,16 +34,31 @@ export const useLogin = () => {
     mutationFn: ({ identifier, password }) =>
       authServices.loginUser({ identifier, password }),
     onSuccess: async (response) => {
-      console.log('response', response);
+      console.log('Login response:', response);
       try {
-        console.log('Login success', response);
-        if (response) {
-          await storageMethod.set({ token: response.token });
-          // Navigate trực tiếp đến DrawerScreens
-          navigation.navigate('Main');
+        const token = response?.token; // Access the token directly
+
+        if (typeof token === 'string') {
+          // Ensure it's a string
+          // Save the token string directly
+          await storageMethod.set('token', token);
+
+          // Decode the token to get the user ID
+          const decoded = jwtDecode(token);
+          const userId = decoded?.i || decoded?.userId; // Adjust this key as per your token payload structure
+
+          if (userId) {
+            // Save userId independently
+            await storageMethod.set('userId', userId);
+            navigation.navigate('Main');
+          } else {
+            throw new Error('User ID not found in token payload');
+          }
+        } else {
+          throw new Error('Invalid token format');
         }
       } catch (error) {
-        console.error('Error handling login:', error);
+        console.error('Error during login:', error);
         Alert.alert(
           'Login Error',
           'There was an error while logging in. Please try again.',
@@ -57,6 +73,7 @@ export const useLogin = () => {
       );
     },
   });
+
   return { login, ...rest };
 };
 
