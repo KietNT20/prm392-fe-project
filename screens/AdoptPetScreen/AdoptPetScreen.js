@@ -1,4 +1,5 @@
 import { useCreateAdoptionRequest } from '@/hooks/AdoptionRequest';
+import { useAddCartPet } from '@/hooks/CartPet';
 import { Ionicons } from '@expo/vector-icons';
 import { useRoute } from '@react-navigation/native';
 import { Button, Card, Input } from '@rneui/themed';
@@ -24,9 +25,14 @@ const AdoptPetScreen = () => {
   const { createAdoptionReq } = useCreateAdoptionRequest();
   const route = useRoute();
   const { profile } = useSelector((state) => state.userProfile);
+  const { addCartPet } = useAddCartPet();
   // console.log('User Profile:', profile);
   const { petId } = route.params;
   // console.log('Pet ID:', petId);
+
+  const handleAddToCart = () => {
+    addCartPet({ petId: petId });
+  };
 
   const validateForm = () => {
     let isValid = true;
@@ -83,6 +89,7 @@ const AdoptPetScreen = () => {
         phoneNumber: formData.phoneNumber,
         cccd: formData.cccd,
       });
+      handleAddToCart();
     }
   };
 

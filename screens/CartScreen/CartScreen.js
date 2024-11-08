@@ -1,14 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, ActivityIndicator, Image } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { useGetAllCartPets } from '@/hooks/CartPet';
-import { TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { useEffect, useState } from 'react';
+import {
+  ActivityIndicator,
+  FlatList,
+  Image,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 const CartScreen = ({ navigation }) => {
   const [petDetails, setPetDetails] = useState([]); // Store pet details
 
   // Fetch carts data
   const { data: carts, isLoading, isError, error } = useGetAllCartPets();
+  console.log('Carts:', carts?.data);
 
   // Ensure hooks are not conditionally called by only invoking once
   useEffect(() => {

@@ -108,6 +108,22 @@ export const useDeletePet = () => {
     },
   });
 };
+export const useDeleteMedia = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id) => petServices.deleteMedia(id), // Call delete API
+    onSuccess: () => {
+      console.log('Image deleted successfully');
+
+      // Optionally invalidate or refetch queries related to the pets list
+      queryClient.invalidateQueries(['pets']); // Ensure updated list after deletion
+    },
+    onError: (error) => {
+      console.error('Error deleting image:', error);
+    },
+  });
+};
 export const useSearchPets = (queryParams) => {
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ['petsQuery', queryParams],
