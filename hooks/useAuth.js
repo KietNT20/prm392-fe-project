@@ -1,7 +1,7 @@
 import { useAuthContext } from '@/context/AuthContext';
 import { handleGetProfile } from '@/store/reducers/userProfileReducer';
 import { useNavigation } from '@react-navigation/native';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { jwtDecode } from 'jwt-decode';
 import { Alert, ToastAndroid } from 'react-native';
 import { useDispatch } from 'react-redux';
@@ -47,7 +47,7 @@ export const useLogin = () => {
           ToastAndroid.show('Login successful', ToastAndroid.TOP);
         }
       } catch (error) {
-        console.error('Error handling login:', error);
+        console.error('Error during login:', error);
         Alert.alert(
           'Login Error',
           'There was an error while logging in. Please try again.',
@@ -87,4 +87,13 @@ export const useLogout = () => {
   };
 
   return { logout };
+};
+
+export const useGetUserDetails = (userId) => {
+  const { data: getUserDetailsData, ...rest } = useQuery({
+    queryKey: ['userDetails', userId],
+    queryFn: () => authServices.getUserDetails(userId),
+    enabled: !!userId,
+  });
+  return { getUserDetailsData, ...rest };
 };

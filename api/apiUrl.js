@@ -1,6 +1,7 @@
 export const API = {
   LOGIN: 'auth/login',
   REGISTER: 'auth/register',
+  USER_BY_ID: 'users/',
   CART_PETS: 'cart-pets',
   PETS: 'pets/all',
   PET_DETAIL: 'pets/',

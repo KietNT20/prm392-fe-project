@@ -20,6 +20,7 @@ import PetListingScreen from './screens/Pet/PetListingScreen';
 import SplashScreen from './screens/SplashScreen/SplashScreen';
 import LoginScreen from './screens/UserScreen/LoginScreen';
 import RegisterScreen from './screens/UserScreen/RegisterScreen';
+import ProfileScreen from './screens/UserScreen/ProfileScreen';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -61,6 +62,7 @@ function DrawerNavigator() {
     >
       <Drawer.Screen name="Home" component={HomeScreen} />
       <Drawer.Screen name="AddPet" component={AddPetScreen} />
+      <Drawer.Screen name="Profile" component={ProfileScreen} />
       <Drawer.Screen name="Donation" component={DonateScreen} />
       <Drawer.Screen name="Pet" component={PetListingScreen} />
       <Drawer.Screen name="New" component={NewListingScreen} />
