@@ -15,19 +15,6 @@ export const userProfileSlice = createSlice({
       state.profile = action.payload;
     },
   },
-  extraReducers: (builder) => {
-    builder
-      .addCase(handleGetProfile.fulfilled, (state, action) => {
-        state.profile = action.payload;
-        state.loading.getProfile = false;
-      })
-      .addCase(handleGetProfile.pending, (state) => {
-        state.loading.getProfile = true;
-      })
-      .addCase(handleGetProfile.rejected, (state) => {
-        state.loading.getProfile = false;
-      });
-  },
 });
 
 // Extract the action creators object and the reducer
