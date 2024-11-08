@@ -4,6 +4,7 @@ import { useRoute } from '@react-navigation/native';
 import { Button, Card, Input } from '@rneui/themed';
 import { useState } from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
+import { useSelector } from 'react-redux';
 
 const AdoptPetScreen = () => {
   const [formData, setFormData] = useState({
@@ -22,6 +23,9 @@ const AdoptPetScreen = () => {
 
   const { createAdoptionReq } = useCreateAdoptionRequest();
   const route = useRoute();
+  const { profile } = useSelector((state) => state.userProfile);
+  console.log('User Profile:', profile);
+
   const { petId } = route.params;
   console.log('Pet ID:', petId);
 
