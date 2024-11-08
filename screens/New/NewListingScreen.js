@@ -18,6 +18,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
+import { useSelector } from 'react-redux';
 
 const NewListingScreen = ({ navigation }) => {
   const [selectedNews, setSelectedNews] = useState(null);
@@ -39,6 +40,7 @@ const NewListingScreen = ({ navigation }) => {
   const { mutate: deleteNew } = useDeleteNew();
   const { mutate: updateNew } = useUpdateNew(); // Hook cập nhật mới
   const { mutate: addNew } = useAddNew();
+  const { profile } = useSelector((state) => state.userProfile);
 
   const handleAddClose = () => {
     setAddNews({ name: '', views: '' }); // Reset form
@@ -80,6 +82,7 @@ const NewListingScreen = ({ navigation }) => {
       ],
     );
   };
+
   const handleEdit = () => {
     if (!selectedNews) return;
 
@@ -142,7 +145,7 @@ const NewListingScreen = ({ navigation }) => {
 
   return (
     <View className="flex-1 bg-gray-100 p-4">
-      <View className="flex-row justify-between items-center">
+      <View className="flex-row justify-between items-center mb-4">
         <Text className="text-xl font-bold">News List</Text>
         <TouchableOpacity onPress={() => setSearchModalVisible(true)}>
           <Ionicons name="search" size={24} color="#000" />
@@ -151,6 +154,9 @@ const NewListingScreen = ({ navigation }) => {
       <TouchableOpacity
         onPress={() => setAddModalVisible(true)}
         className="bg-blue-500 p-2 rounded m-2"
+        style={{
+          display: profile.role === 'admin' ? 'flex' : 'none',
+        }}
       >
         <Text className="text-white text-center">Add News</Text>
       </TouchableOpacity>
@@ -202,7 +208,13 @@ const NewListingScreen = ({ navigation }) => {
                 >
                   <Text className="text-lg text-black">View Details</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={handleDelete} className="my-2">
+                <TouchableOpacity
+                  onPress={handleDelete}
+                  className="my-2"
+                  style={{
+                    display: profile.role === 'admin' ? 'flex' : 'none',
+                  }}
+                >
                   <Text className="text-lg text-black">Delete News</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -215,6 +227,9 @@ const NewListingScreen = ({ navigation }) => {
                     setModalVisible(false);
                   }}
                   className="my-2"
+                  style={{
+                    display: profile.role === 'admin' ? 'flex' : 'none',
+                  }}
                 >
                   <Text className="text-lg text-black">Edit News</Text>
                 </TouchableOpacity>

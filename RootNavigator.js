@@ -30,7 +30,15 @@ function DrawerNavigator() {
     <Drawer.Navigator initialRouteName="Home">
       <Drawer.Screen name="Home" component={HomeScreen} />
       <Drawer.Screen name="Profile" component={ProfileScreen} />
-      <Drawer.Screen name="Donation" component={DonateScreen} />
+      <Drawer.Screen
+        name="Donation"
+        component={DonateScreen}
+        options={{
+          drawerItemStyle: {
+            display: profile?.role === 'user' ? 'flex' : 'none',
+          },
+        }}
+      />
       <Drawer.Screen name="Pet" component={PetListingScreen} />
       <Drawer.Screen name="New" component={NewListingScreen} />
       <Drawer.Screen
@@ -42,7 +50,15 @@ function DrawerNavigator() {
           },
         }}
       />
-      <Drawer.Screen name="Cart" component={CartScreen} />
+      <Drawer.Screen
+        name="Cart"
+        component={CartScreen}
+        options={{
+          drawerItemStyle: {
+            display: profile?.role === 'admin' ? 'flex' : 'none',
+          },
+        }}
+      />
     </Drawer.Navigator>
   );
 }
@@ -50,6 +66,7 @@ function DrawerNavigator() {
 // Main App Navigator with Authentication State
 function RootNavigator() {
   const { userToken } = useAuthContext();
+  const { profile } = useSelector((state) => state.userProfile);
 
   return (
     <NavigationContainer>
@@ -70,17 +87,27 @@ function RootNavigator() {
             <Stack.Screen
               name="CartDetailScreen"
               component={CartDetailScreen}
-              options={{ headerShown: false, title: 'Adopt Pet' }}
+              options={{
+                headerShown: false,
+                drawerItemStyle: {
+                  display: profile?.role === 'user' ? 'flex' : 'none',
+                },
+              }}
             />
             <Stack.Screen
               name="NewDetail"
               component={NewDetailScreen}
-              options={{ headerShown: false, title: 'Adopt Pet' }}
+              options={{
+                headerShown: false,
+                drawerItemStyle: {
+                  display: profile?.role === 'user' ? 'flex' : 'none',
+                },
+              }}
             />
             <Stack.Screen
               name="PetDetail"
               component={PetDetailScreen}
-              options={{ headerShown: false, title: 'Adopt Pet' }}
+              options={{ headerShown: false }}
             />
           </>
         ) : (
