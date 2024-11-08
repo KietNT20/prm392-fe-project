@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import { Ionicons } from '@expo/vector-icons';
+import { useEffect, useState } from 'react';
 import {
-  View,
-  TextInput,
-  TouchableOpacity,
-  Text,
   ActivityIndicator,
   Alert,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
   ScrollView,
 } from 'react-native';
 import { useSelector } from 'react-redux';
@@ -14,7 +15,6 @@ import {
   useLogout,
   useUpdateUserInfo,
 } from '@/hooks/useAuth';
-import { Ionicons } from '@expo/vector-icons';
 
 const ProfileScreen = () => {
   const [formData, setFormData] = useState({
@@ -37,7 +37,7 @@ const ProfileScreen = () => {
 
   const { profile } = useSelector((state) => state.userProfile);
   const { getUserDetailsData, isLoading, error } = useGetUserDetails(
-    profile.id,
+    profile?.id,
   );
   const updateUserMutation = useUpdateUserInfo();
   const { logout } = useLogout();
@@ -109,7 +109,7 @@ const ProfileScreen = () => {
         </Text>
       </View>
       <Text className="text-2xl  font-bold text-indigo-700 mb-3">
-        {profile.role}
+        {profile?.role}
       </Text>
       <View className="flex-row justify-around mb-5">
         <TouchableOpacity
@@ -300,7 +300,7 @@ const ProfileScreen = () => {
           </TouchableOpacity>
         </>
       )}
-      <View className="mt-5 px-4">
+      <View className="mt-3">
         <TouchableOpacity
           className="bg-indigo-300 p-4 rounded-lg"
           onPress={handleLogout}

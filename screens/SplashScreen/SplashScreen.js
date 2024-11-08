@@ -1,15 +1,19 @@
 import { useAuthContext } from '@/context/AuthContext';
+import { handleSaveProfile } from '@/store/reducers/userProfileReducer';
 import storageMethod from '@/utils/storageMethod';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { jwtDecode } from 'jwt-decode';
 import { useEffect, useRef, useState } from 'react';
 import { Animated, Text, View } from 'react-native';
+import { useDispatch } from 'react-redux';
 
 const SplashScreen = () => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const navigation = useNavigation();
   const { updateToken } = useAuthContext();
   const [isLoading, setIsLoading] = useState(true);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const checkAuthAndAnimate = async () => {
@@ -28,6 +32,7 @@ const SplashScreen = () => {
           if (token?.token) {
             // Just navigate to Login screen, the RootNavigator will handle the redirection
             updateToken(token.token);
+            dispatch(handleSaveProfile(jwtDecode(token.token)));
             navigation.navigate('App');
           } else {
             navigation.replace('Login');
