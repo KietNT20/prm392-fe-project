@@ -1,18 +1,18 @@
-import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  ActivityIndicator,
-  FlatList,
-  Modal,
-  Button,
-  TouchableOpacity,
-  Alert,
-} from 'react-native';
 import {
   useGetAllAdoptionRequests,
   useUpdateAdoptionRequestStatus,
 } from '@/hooks/AdoptionRequest';
+import { useState } from 'react';
+import {
+  ActivityIndicator,
+  Alert,
+  Button,
+  FlatList,
+  Modal,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 const AdoptionRequestsScreen = () => {
   const { adoptionRequests, isLoading, error } = useGetAllAdoptionRequests();
@@ -75,7 +75,7 @@ const AdoptionRequestsScreen = () => {
         return 'text-yellow-600';
       case 'rejected':
         return 'text-red-600';
-      case 'done':
+      case 'approved':
         return 'text-green-600';
       default:
         return 'text-gray-700';
@@ -130,29 +130,32 @@ const AdoptionRequestsScreen = () => {
             <Text className="text-xl font-semibold mb-4">Change Status</Text>
 
             <View className="mb-4">
-              {['done', 'pending', 'rejected'].map((status) => (
+              {['approved', 'pending', 'rejected'].map((status) => (
                 <TouchableOpacity
                   key={status}
                   onPress={() => setSelectedStatus(status)}
                   className={`mb-2 p-2 rounded border border-gray-300 ${
-                    selectedStatus === status
-                      ? 'bg-blue-500 text-white'
-                      : 'bg-white text-black'
+                    selectedStatus === status ? 'bg-blue-500' : 'bg-white'
                   }`}
                 >
-                  <Text className="text-lg">
+                  <Text
+                    className={`text-lg ${
+                      selectedStatus === status ? 'text-white' : 'text-black'
+                    }`}
+                  >
                     {status.charAt(0).toUpperCase() + status.slice(1)}
                   </Text>
                 </TouchableOpacity>
               ))}
             </View>
 
-            <Button title="Confirm" onPress={handleStatusChange} />
+            <View className="mb-3">
+              <Button title="Confirm" onPress={handleStatusChange} />
+            </View>
             <Button
               title="Cancel"
               onPress={() => setModalVisible(false)}
               color="gray"
-              className="mt-3"
             />
           </View>
         </View>
