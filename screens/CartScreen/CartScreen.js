@@ -12,7 +12,6 @@ import {
 
 const CartScreen = ({ navigation }) => {
   const [petDetails, setPetDetails] = useState([]); // Store pet details
-
   // Fetch carts data
   const { data: carts, isLoading, isError, error } = useGetAllCartPets();
   console.log('Carts:', carts?.data);
