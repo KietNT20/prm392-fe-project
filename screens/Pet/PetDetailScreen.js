@@ -1,11 +1,10 @@
-import { useAddCartPet } from '@/hooks/CartPet';
 import { usePetDetail, useUpdatePet } from '@/hooks/Pet';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { Dialog } from '@rneui/themed';
 import { useEffect, useState } from 'react';
 import {
   Alert,
-  Button,
   Image,
   ScrollView,
   Text,
@@ -18,13 +17,13 @@ const PetDetailScreen = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [editablePet, setEditablePet] = useState(pet);
   const [originalPet, setOriginalPet] = useState(null);
+  const [showDialog, setShowDialog] = useState(false);
+
   const navigation = useNavigation();
   const route = useRoute();
   const { petId, imageUrl } = route.params;
   const { pet } = usePetDetail(petId);
   const updatePetMutation = useUpdatePet();
-
-  const { addCartPet } = useAddCartPet();
 
   useEffect(() => {
     if (pet) {
@@ -42,8 +41,19 @@ const PetDetailScreen = () => {
   };
 
   const handleRequestAdoption = () => {
-    Alert.alert('Adoption process started');
-    navigation.navigate('Adoption');
+    setShowDialog(true);
+  };
+
+  const handleConfirmDialog = () => {
+    setShowDialog(false);
+    navigation.navigate('Adoption', {
+      petId: petId,
+      petName: pet.name,
+    });
+  };
+
+  const handleCancelDialog = () => {
+    setShowDialog(false);
   };
 
   const handleCancel = () => {
@@ -101,12 +111,14 @@ const PetDetailScreen = () => {
             </TouchableOpacity>
           </View>
         ) : (
-          <TouchableOpacity
-            className="absolute top-12 right-5 bg-yellow-400 p-2 rounded-full shadow-md"
-            onPress={toggleEditMode}
-          >
-            <Ionicons name="pencil" size={24} color="white" />
-          </TouchableOpacity>
+          <View className="absolute top-12 right-5 flex-row z-10">
+            <TouchableOpacity
+              className=" bg-yellow-400 p-2 rounded-full shadow-md"
+              onPress={toggleEditMode}
+            >
+              <Ionicons name="pencil" size={24} color="white" />
+            </TouchableOpacity>
+          </View>
         )}
 
         <View className="relative">
@@ -120,10 +132,72 @@ const PetDetailScreen = () => {
 
         {isEditMode ? (
           <View>
+            {/* Edit Name */}
             <TextInput
               value={editablePet?.name}
               onChangeText={(text) => handleInputChange('name', text)}
               placeholder="Pet Name"
+              className="bg-yellow-200 rounded-lg p-3 mb-4 text-lg shadow-sm"
+            />
+
+            {/* Edit Breed */}
+            <TextInput
+              value={editablePet?.breed}
+              onChangeText={(text) => handleInputChange('breed', text)}
+              placeholder="Pet Breed"
+              className="bg-yellow-200 rounded-lg p-3 mb-4 text-lg shadow-sm"
+            />
+
+            {/* Edit Age */}
+            <TextInput
+              value={editablePet?.age?.toString()}
+              onChangeText={(text) => handleInputChange('age', text)}
+              placeholder="Pet Age"
+              keyboardType="numeric"
+              className="bg-yellow-200 rounded-lg p-3 mb-4 text-lg shadow-sm"
+            />
+
+            {/* Edit Sex */}
+            <TextInput
+              value={editablePet?.sex}
+              onChangeText={(text) => handleInputChange('sex', text)}
+              placeholder="Pet Sex"
+              className="bg-yellow-200 rounded-lg p-3 mb-4 text-lg shadow-sm"
+            />
+
+            {/* Edit Species */}
+            <TextInput
+              value={editablePet?.species}
+              onChangeText={(text) => handleInputChange('species', text)}
+              placeholder="Pet Species"
+              className="bg-yellow-200 rounded-lg p-3 mb-4 text-lg shadow-sm"
+            />
+
+            {/* Edit Coat Color */}
+            <TextInput
+              value={editablePet?.coatColor}
+              onChangeText={(text) => handleInputChange('coatColor', text)}
+              placeholder="Coat Color"
+              className="bg-yellow-200 rounded-lg p-3 mb-4 text-lg shadow-sm"
+            />
+
+            {/* Edit Vaccination Status */}
+            <TextInput
+              value={editablePet?.vaccinated ? 'Yes' : 'No'}
+              onChangeText={(text) =>
+                handleInputChange('vaccinated', text === 'Yes')
+              }
+              placeholder="Vaccinated"
+              className="bg-yellow-200 rounded-lg p-3 mb-4 text-lg shadow-sm"
+            />
+
+            {/* Edit Description */}
+            <TextInput
+              value={editablePet?.description}
+              onChangeText={(text) => handleInputChange('description', text)}
+              placeholder="Pet Description"
+              multiline
+              numberOfLines={4}
               className="bg-yellow-200 rounded-lg p-3 mb-4 text-lg shadow-sm"
             />
           </View>
@@ -206,6 +280,15 @@ const PetDetailScreen = () => {
           </TouchableOpacity>
         </View>
       </View>
+
+      <Dialog isVisible={showDialog} onBackdropPress={handleCancelDialog}>
+        <Dialog.Title title="Confirm Logout" />
+        <Text>Are you sure you want request adopt this pet?</Text>
+        <Dialog.Actions>
+          <Dialog.Button title="OK" onPress={handleConfirmDialog} />
+          <Dialog.Button title="Cancel" onPress={handleCancelDialog} />
+        </Dialog.Actions>
+      </Dialog>
     </ScrollView>
   );
 };

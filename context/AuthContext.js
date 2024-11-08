@@ -1,34 +1,23 @@
-import storageMethod from '@/utils/storageMethod';
-import { createContext, useEffect, useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 
-export const AuthContext = createContext({
-  isLoading: true,
-  userToken: null,
-});
+const AuthContext = createContext();
 
-export function AuthProvider({ children }) {
-  const [isLoading, setIsLoading] = useState(true);
+export const AuthProvider = ({ children }) => {
   const [userToken, setUserToken] = useState(null);
 
-  useEffect(() => {
-    checkAuthStatus();
-  }, []);
+  const updateToken = (token) => {
+    setUserToken(token);
+  };
 
-  const checkAuthStatus = async () => {
-    try {
-      const token = await storageMethod.get();
-      console.log('token auth context', token);
-      setUserToken(token?.token);
-    } catch (error) {
-      console.error('Error checking auth status:', error);
-    } finally {
-      setIsLoading(false);
-    }
+  const clearToken = () => {
+    setUserToken(null);
   };
 
   return (
-    <AuthContext.Provider value={{ isLoading, userToken }}>
+    <AuthContext.Provider value={{ userToken, updateToken, clearToken }}>
       {children}
     </AuthContext.Provider>
   );
-}
+};
+
+export const useAuthContext = () => useContext(AuthContext);

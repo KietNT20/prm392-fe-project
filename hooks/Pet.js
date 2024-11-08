@@ -9,10 +9,10 @@ export const useGetAllPets = (searchParams = {}) => {
         ? petServices.getPetsByQuery(searchParams) // Fetch with filters
         : petServices.getAllPets(), // Fetch all pets if no filters
     onSuccess: (response) => {
-      console.log('Fetched pets:', response);
+      // console.log('Fetched pets:', response);
     },
     onError: (error) => {
-      console.log('Error fetching pets:', error);
+      // console.log('Error fetching pets:', error);
     },
   });
 
@@ -29,10 +29,10 @@ export const usePetDetail = (id) => {
     queryKey: ['pets', id],
     queryFn: () => petServices.getPetDetail(id), // Fetch pet detail using the ID
     onSuccess: (response) => {
-      console.log('Pet detail fetched:', response);
+      // console.log('Pet detail fetched:', response);
     },
     onError: (error) => {
-      console.log('Error fetching pet detail:', error);
+      // console.log('Error fetching pet detail:', error);
     },
   });
 
@@ -50,7 +50,7 @@ export const useAddPet = () => {
   return useMutation({
     mutationFn: (newPet) => petServices.addPet(newPet), // Make sure you pass the full newPet object with the image id
     onSuccess: () => {
-      console.log('Pet added successfully');
+      // console.log('Pet added successfully');
       queryClient.invalidateQueries(['pets']);
     },
   });
@@ -78,7 +78,7 @@ export const useUpdatePet = () => {
     mutationFn: ({ id, updatedPetData }) =>
       petServices.updatePet(id, updatedPetData), // Call the API to update pet
     onSuccess: (response) => {
-      console.log('Pet updated successfully:', response);
+      // console.log('Pet updated successfully:', response);
 
       // Use correct pet ID from response
       queryClient.invalidateQueries(['pets', response.pet._id]);
@@ -98,7 +98,7 @@ export const useDeletePet = () => {
   return useMutation({
     mutationFn: (id) => petServices.deletePet(id), // Call delete API
     onSuccess: () => {
-      console.log('Pet deleted successfully');
+      // console.log('Pet deleted successfully');
 
       // Optionally invalidate or refetch queries related to the pets list
       queryClient.invalidateQueries(['pets']); // Ensure updated list after deletion
@@ -108,16 +108,32 @@ export const useDeletePet = () => {
     },
   });
 };
+export const useDeleteMedia = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id) => petServices.deleteMedia(id), // Call delete API
+    onSuccess: () => {
+      console.log('Image deleted successfully');
+
+      // Optionally invalidate or refetch queries related to the pets list
+      queryClient.invalidateQueries(['pets']); // Ensure updated list after deletion
+    },
+    onError: (error) => {
+      console.error('Error deleting image:', error);
+    },
+  });
+};
 export const useSearchPets = (queryParams) => {
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ['petsQuery', queryParams],
     queryFn: () => petServices.getPetsByQuery(queryParams),
     enabled: !!queryParams && Object.keys(queryParams).length > 0,
     onSuccess: (response) => {
-      console.log('Search results:', response);
+      // console.log('Search results:', response);
     },
     onError: (error) => {
-      console.log('Error fetching search results:', error);
+      // console.log('Error fetching search results:', error);
     },
   });
 

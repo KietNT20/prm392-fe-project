@@ -1,23 +1,23 @@
-import React, { useState } from 'react';
 import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  Modal,
-  TouchableWithoutFeedback,
-  Alert,
-  ActivityIndicator,
-  TextInput,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import {
-  useGetAllNews,
-  useDeleteNew,
-  useUpdateNew,
   useAddNew,
+  useDeleteNew,
+  useGetAllNews,
+  useQueryNew,
+  useUpdateNew,
 } from '@/hooks/New';
-import { useQueryNew } from '@/hooks/New';
+import { Ionicons } from '@expo/vector-icons';
+import { useState } from 'react';
+import {
+  ActivityIndicator,
+  Alert,
+  FlatList,
+  Modal,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 
 const NewListingScreen = ({ navigation }) => {
   const [selectedNews, setSelectedNews] = useState(null);
@@ -68,7 +68,7 @@ const NewListingScreen = ({ navigation }) => {
           onPress: () => {
             deleteNew(selectedNews._id, {
               onSuccess: () => {
-                console.log(`News deleted: ${selectedNews.name}`);
+                // console.log(`News deleted: ${selectedNews.name}`);
                 setModalVisible(false);
               },
               onError: (error) => {
@@ -92,7 +92,7 @@ const NewListingScreen = ({ navigation }) => {
 
     updateNew(updatedNews, {
       onSuccess: () => {
-        console.log(`News updated: ${updatedNews.name}`);
+        // console.log(`News updated: ${updatedNews.name}`);
         setEditModalVisible(false);
         setModalVisible(false);
         Alert.alert('Success', 'News update successfully!', [{ text: 'OK' }]);
@@ -101,7 +101,7 @@ const NewListingScreen = ({ navigation }) => {
         console.error('Error updating news:', error);
       },
     });
-    console.log('data', updatedNews);
+    // console.log('data', updatedNews);
   };
   const handleAdd = () => {
     const newNews = {
@@ -112,7 +112,7 @@ const NewListingScreen = ({ navigation }) => {
 
     addNew(newNews, {
       onSuccess: () => {
-        console.log(`News added: ${addNews.name}`);
+        // console.log(`News added: ${addNews.name}`);
         setAddModalVisible(false);
         setAddNews({ name: '', views: '' }); // Reset form
         Alert.alert('Success', 'News added successfully!', [{ text: 'OK' }]);
