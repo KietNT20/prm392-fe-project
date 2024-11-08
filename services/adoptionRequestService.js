@@ -15,4 +15,10 @@ export const adoptionRequestService = {
   updateStatusAdoptReq({ id, status }) {
     return axiosInstance.patch(API.ADOPT_REQ, { id, status });
   },
+  getAdoptReq() {
+    return axiosInstance.get(API.ADOPT_REQ);
+  },
+  updateAdoptRegStatus({ id, status }) {
+    return axiosInstance.patch(API.ADOPT_REQ, { id, status });
+  },
 };
