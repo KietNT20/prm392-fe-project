@@ -77,7 +77,7 @@ const AddPetForm = () => {
         setImageUri(pickedImageUri);
         setUploadedImageId(null); // Reset uploaded image ID when a new image is picked
       } else {
-        console.log('Image picking was canceled.');
+        // console.log('Image picking was canceled.');
       }
     } catch (error) {
       console.error('Error picking the image:', error);

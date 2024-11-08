@@ -2,7 +2,7 @@ import PetSearchBar from '@/components/Search/SearchBar';
 import { useDeletePet, useGetAllPets } from '@/hooks/Pet';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -24,12 +24,6 @@ const PetListingScreen = () => {
   const { pets, isLoading, isError, error } = useGetAllPets(searchParams);
   const { mutate: deletePet } = useDeletePet();
 
-  useEffect(() => {
-    if (isLoading) console.log('Fetching pets...');
-    if (isError) console.error('Error fetching pets:', error);
-    if (pets) console.log('Fetched pets:', pets);
-  }, [isLoading, isError, pets]);
-
   const handleDelete = (petId) => {
     Alert.alert('Delete Pet', 'Are you sure you want to delete this pet?', [
       { text: 'Cancel', style: 'cancel' },
@@ -39,7 +33,7 @@ const PetListingScreen = () => {
         onPress: () => {
           deletePet(petId, {
             onSuccess: () => {
-              console.log('Pet deleted successfully:', petId);
+              // console.log('Pet deleted successfully:', petId);
             },
             onError: (error) => {
               console.error('Error deleting pet:', error);
