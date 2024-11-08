@@ -1,3 +1,4 @@
+import { useAddCartPet } from '@/hooks/CartPet';
 import { usePetDetail, useUpdatePet } from '@/hooks/Pet';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -25,6 +26,7 @@ const PetDetailScreen = () => {
   const { petId, imageUrl } = route.params;
   const { pet } = usePetDetail(petId);
   const updatePetMutation = useUpdatePet();
+  const { addCartPet, isLoading, error } = useAddCartPet();
 
   useEffect(() => {
     if (pet) {
@@ -88,7 +90,9 @@ const PetDetailScreen = () => {
       },
     );
   };
-
+  const handleAddToCart = () => {
+    addCartPet({ petId: petId });
+  };
   return (
     <ScrollView className="flex-1 p-5 bg-white">
       <TouchableOpacity
@@ -219,6 +223,11 @@ const PetDetailScreen = () => {
           color="#34D399"
         />
       </View>
+      <Button
+        title="Add to cart"
+        onPress={() => handleAddToCart()}
+        color="#555555"
+      />
 
       <Dialog isVisible={showDialog} onBackdropPress={handleCancelDialog}>
         <Dialog.Title title="Confirm Logout" />
