@@ -6,6 +6,7 @@ import { persistStore } from 'redux-persist';
 import { PersistGate } from 'redux-persist/integration/react';
 import { AuthProvider } from './context/AuthContext';
 import RootNavigator from './RootNavigator';
+import store from './store/store';
 
 const queryClient = new QueryClient();
 let persistor = persistStore(store);
