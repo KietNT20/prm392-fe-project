@@ -19,7 +19,7 @@ const CardComponent = ({ data, onPress }) => {
       <Text style={{ marginBottom: 10 }}>{description}</Text>
       <Button
         onPress={onPress}
-        type="clear"
+        type='clear'
         buttonStyle={{
           borderRadius: 0,
           marginLeft: 0,

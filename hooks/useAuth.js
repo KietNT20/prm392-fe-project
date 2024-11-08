@@ -1,5 +1,5 @@
 import { useAuthContext } from '@/context/AuthContext';
-import { handleGetProfile } from '@/store/reducers/userProfile.reducer';
+import { handleGetProfile } from '@/store/reducers/userProfileReducer';
 import { useNavigation } from '@react-navigation/native';
 import { useMutation } from '@tanstack/react-query';
 import { jwtDecode } from 'jwt-decode';
@@ -34,7 +34,6 @@ export const useRegister = () => {
 export const useLogin = () => {
   const { updateToken } = useAuthContext();
   const dispatch = useDispatch();
-
   const { mutate: login, ...rest } = useMutation({
     mutationKey: ['login'],
     mutationFn: ({ identifier, password }) =>
