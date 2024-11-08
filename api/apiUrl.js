@@ -1,6 +1,7 @@
 export const API = {
   LOGIN: 'auth/login',
   REGISTER: 'auth/register',
+  USER_BY_ID: 'users/',
   CART_PETS: 'cart-pets',
   PETS: 'pets/all',
   PET_DETAIL: 'pets/',
@@ -9,12 +10,11 @@ export const API = {
   MEDIA: 'media',
   DELETE_PET: 'pets/delete/',
   PET_QUERY: 'pets',
-
   NEWS: 'news',
   DELETE_NEWS: 'news/delete/',
   UPDATE_NEWS: 'news/update/',
   ADD_NEWS: 'news/add/',
   NEWS_DETAIL: 'news/',
   NEWS_QUERY: 'news/query',
-  ADOPT_REQ: 'adoption-request',
+  ADOPT_REQ: 'request/adoption-request',
 };

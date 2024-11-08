@@ -2,6 +2,7 @@ import { useAddCartPet } from '@/hooks/CartPet';
 import { usePetDetail, useUpdatePet } from '@/hooks/Pet';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { Dialog } from '@rneui/themed';
 import { useEffect, useState } from 'react';
 import {
   Alert,
@@ -18,6 +19,8 @@ const PetDetailScreen = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [editablePet, setEditablePet] = useState(pet);
   const [originalPet, setOriginalPet] = useState(null);
+  const [showDialog, setShowDialog] = useState(false);
+
   const navigation = useNavigation();
   const route = useRoute();
   const { petId, imageUrl } = route.params;
@@ -42,11 +45,19 @@ const PetDetailScreen = () => {
   };
 
   const handleRequestAdoption = () => {
-    Alert.alert('Adoption process started');
+    setShowDialog(true);
+  };
+
+  const handleConfirmDialog = () => {
+    setShowDialog(false);
     navigation.navigate('Adoption', {
       petId: petId,
       petName: pet.name,
     });
+  };
+
+  const handleCancelDialog = () => {
+    setShowDialog(false);
   };
 
   // Handle canceling the edit and revert to original data
@@ -217,6 +228,15 @@ const PetDetailScreen = () => {
         onPress={() => handleAddToCart()}
         color="#555555"
       />
+
+      <Dialog isVisible={showDialog} onBackdropPress={handleCancelDialog}>
+        <Dialog.Title title="Confirm Logout" />
+        <Text>Are you sure you want request adopt this pet?</Text>
+        <Dialog.Actions>
+          <Dialog.Button title="OK" onPress={handleConfirmDialog} />
+          <Dialog.Button title="Cancel" onPress={handleCancelDialog} />
+        </Dialog.Actions>
+      </Dialog>
     </ScrollView>
   );
 };

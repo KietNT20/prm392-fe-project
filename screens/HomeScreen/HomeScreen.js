@@ -34,10 +34,6 @@ const HomeScreen = () => {
           />
         </View>
       </View>
-      <View className="flex-1 px-4">
-        <Text h3>Blog and News</Text>
-        <View></View>
-      </View>
     </ScrollView>
   );
 };
