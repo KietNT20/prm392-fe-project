@@ -15,4 +15,7 @@ export const authServices = {
   getUserDetails(userId) {
     return axiosInstance.get(API.USER_BY_ID + userId);
   },
+  updateUser(userId, data) {
+    return axiosInstance.put(`${API.UPDATE_USER}${userId}`, data);
+  },
 };

@@ -1,7 +1,8 @@
+//useAuth.js
 import { useAuthContext } from '@/context/AuthContext';
 import { handleGetProfile } from '@/store/reducers/userProfileReducer';
 import { useNavigation } from '@react-navigation/native';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { jwtDecode } from 'jwt-decode';
 import { Alert, ToastAndroid } from 'react-native';
 import { useDispatch } from 'react-redux';
@@ -96,4 +97,24 @@ export const useGetUserDetails = (userId) => {
     enabled: !!userId,
   });
   return { getUserDetailsData, ...rest };
+};
+export const useUpdateUserInfo = () => {
+  const queryClient = useQueryClient(); // Initialize query client for cache management
+
+  return useMutation({
+    mutationFn: ({ userId, updatedUserData }) =>
+      authServices.updateUser(userId, updatedUserData), // Call the API to update user data
+    onSuccess: (response) => {
+      console.log('User updated successfully:', response);
+
+      // Invalidate and refetch the user's data by ID to keep it in sync
+      queryClient.invalidateQueries(['user', response.data._id]);
+
+      // Optionally, you can refetch the user data to update the UI immediately
+      queryClient.refetchQueries(['user', response.data._id]);
+    },
+    onError: (error) => {
+      console.error('Error updating user:', error);
+    },
+  });
 };
