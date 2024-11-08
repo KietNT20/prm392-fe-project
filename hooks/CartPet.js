@@ -27,7 +27,7 @@ export const useGetCartPetDetail = (id) => {
 export const useAddCartPet = () => {
   const queryClient = useQueryClient();
   const { mutate: addCartPet, ...rest } = useMutation({
-    mutationFn: (data) => cartPetService.addCartPet(data),
+    mutationFn: ({ petId }) => cartPetService.addCartPet({ petId }),
     onSuccess: () => {
       // Invalidate and refetch relevant queries
       queryClient.invalidateQueries(['pets', 'cart']);

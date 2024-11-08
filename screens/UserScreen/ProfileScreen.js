@@ -29,7 +29,7 @@ const ProfileScreen = () => {
 
   const { profile } = useSelector((state) => state.userProfile);
   const { getUserDetailsData, isLoading, error } = useGetUserDetails(
-    profile.id,
+    profile?.id,
   );
   const { logout } = useLogout();
 
