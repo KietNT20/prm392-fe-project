@@ -102,7 +102,8 @@ const PetDetailScreen = () => {
           </View>
         ) : (
           <TouchableOpacity
-            className="absolute top-12 right-5 bg-yellow-400 p-2 rounded-full shadow-md"
+            style={{ zIndex: 50 }}
+            className="absolute top-11 right-5 bg-red-500 p-2 rounded-full shadow-lg"
             onPress={toggleEditMode}
           >
             <Ionicons name="pencil" size={24} color="white" />

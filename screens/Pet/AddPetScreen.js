@@ -268,6 +268,7 @@ const AddPetForm = () => {
         <Button title="Submit Pet" onPress={submitPet} color="#4A90E2" />
       </View>
     </ScrollView>
+
   );
 };
 
