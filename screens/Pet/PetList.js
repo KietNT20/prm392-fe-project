@@ -37,7 +37,7 @@ const PetListingsScreen = () => {
           style={{ elevation: 5 }}
         >
           {/* Pet Image */}
-          <View className="relative w-24 h-24 ml-3">
+          <View className="relative w-20 h-20 ml-3">
             <Image
               source={{ uri: item.image_id }}
               className="w-full h-full rounded-full object-cover border-2"

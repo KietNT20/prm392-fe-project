@@ -1,4 +1,3 @@
-
 import PetSearchBar from '@/components/Search/SearchBar';
 import { useDeletePet, useGetAllPets } from '@/hooks/Pet';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
@@ -102,16 +101,15 @@ const PetListingScreen = () => {
           renderItem={({ item }) => (
             <TouchableOpacity
               onPress={() => handleDetail(item._id, getImageUrl(item))}
-              className="bg-white my-4 rounded-xl shadow-lg overflow-hidden" 
+              className="bg-white my-4 rounded-xl shadow-lg overflow-hidden"
             >
-              <View className="relative w-full h-56 rounded-t-xl overflow-hidden mt-2">
+              <View className="relative w-full h-56 rounded-t-xl overflow-hidden">
                 <Image
                   source={{ uri: getImageUrl(item) }}
                   className="w-full h-full object-cover"
                   style={{
-                    borderRadius: 16, 
-                    borderWidth: 2,
-                    borderColor: '#FFFFFF', 
+                    borderRadius: 12,
+                    borderColor: '#FFFFFF',
                   }}
                 />
                 <View className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent rounded-t-xl" />
@@ -139,7 +137,6 @@ const PetListingScreen = () => {
                   </Text>
                 </View>
 
- 
                 <View className="flex-row items-center mb-2">
                   <Ionicons name="medkit-outline" size={18} color="#FF6D6D" />
                   <Text className="text-lg text-gray-600 ml-2">
@@ -151,7 +148,6 @@ const PetListingScreen = () => {
           )}
         />
       )}
-
 
       {selectedPet && (
         <Modal

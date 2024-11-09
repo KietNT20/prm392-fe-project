@@ -77,7 +77,8 @@ const PetDetailScreen = () => {
 
   return (
     <ScrollView className="flex-1 bg-gradient-to-b from-peach-100 to-yellow-50">
-      <View className="flex-1 p-6 m-4 bg-slate-300/90 rounded-3xl shadow-xl border border-yellow-100">
+      <View className="flex-1 p-6 bg-slate-300/90 rounded-3xl shadow-xl border border-yellow-100 min-h-screen">
+        {/* Back Button */}
         <TouchableOpacity
           className="absolute top-12 left-5 z-10 rounded-full bg-yellow-200 p-2 shadow-md"
           onPress={() => navigation.navigate('Pet')}
@@ -85,31 +86,7 @@ const PetDetailScreen = () => {
           <Ionicons name="arrow-back" size={24} color="#FF6D6D" />
         </TouchableOpacity>
 
-        {isEditMode ? (
-          <View className="absolute top-12 right-5 flex-row space-x-3 z-10">
-            <TouchableOpacity
-              onPress={handleSave}
-              className="bg-green-500 p-2 rounded-full shadow-md"
-            >
-              <Ionicons name="checkmark" size={24} color="white" />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={handleCancel}
-              className="bg-red-500 p-2 rounded-full shadow-md"
-            >
-              <Ionicons name="close" size={24} color="white" />
-            </TouchableOpacity>
-          </View>
-        ) : (
-          <TouchableOpacity
-            style={{ zIndex: 50 }}
-            className="absolute top-11 right-5 bg-red-500 p-2 rounded-full shadow-lg"
-            onPress={toggleEditMode}
-          >
-            <Ionicons name="pencil" size={24} color="white" />
-          </TouchableOpacity>
-        )}
-
+        {/* Image Section with Edit Button */}
         <View className="relative">
           <Image
             source={{ uri: imageUrl }}
@@ -117,8 +94,34 @@ const PetDetailScreen = () => {
             resizeMode="cover"
           />
           <View className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent rounded-xl" />
+
+          {/* Edit Mode Button Positioned on the Image */}
+          {isEditMode ? (
+            <View className="absolute top-3 right-3 flex-row space-x-3 z-10">
+              <TouchableOpacity
+                onPress={handleSave}
+                className="bg-green-500 p-2 rounded-full shadow-md"
+              >
+                <Ionicons name="checkmark" size={24} color="white" />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={handleCancel}
+                className="bg-red-500 p-2 rounded-full shadow-md"
+              >
+                <Ionicons name="close" size={24} color="white" />
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <TouchableOpacity
+              className="absolute top-6 right-3 bg-red-500 p-2 rounded-full shadow-lg"
+              onPress={toggleEditMode}
+            >
+              <Ionicons name="pencil" size={24} color="white" />
+            </TouchableOpacity>
+          )}
         </View>
 
+        {/* Editable and View Mode Sections */}
         {isEditMode ? (
           <View>
             <TextInput
@@ -141,41 +144,46 @@ const PetDetailScreen = () => {
               </Text>
             </View>
 
+            {/* Pet Details */}
             <View className="space-y-2">
-              <Text className="text-base text-gray-700 flex-row items-center">
+              <View className="flex-row items-center">
                 <Ionicons name="time-outline" size={18} color="#FF6D6D" />
-                <Text className="ml-1">Age: {pet?.age} years</Text>
-              </Text>
-
-              <Text className="text-base text-gray-700 flex-row items-center">
+                <Text className="ml-2 text-base text-gray-700">
+                  Age: {pet?.age} years
+                </Text>
+              </View>
+              <View className="flex-row items-center">
                 <Ionicons
                   name="male-female-outline"
                   size={18}
                   color="#FF6D6D"
                 />
-                <Text className="ml-1">Sex: {pet?.sex}</Text>
-              </Text>
-
-              <Text className="text-base text-gray-700 flex-row items-center">
+                <Text className="ml-2 text-base text-gray-700">
+                  Sex: {pet?.sex}
+                </Text>
+              </View>
+              <View className="flex-row items-center">
                 <Ionicons name="paw-outline" size={18} color="#FF6D6D" />
-                <Text className="ml-1">Species: {pet?.species}</Text>
-              </Text>
-
-              <Text className="text-base text-gray-700 flex-row items-center">
+                <Text className="ml-2 text-base text-gray-700">
+                  Species: {pet?.species}
+                </Text>
+              </View>
+              <View className="flex-row items-center">
                 <MaterialIcons name="color-lens" size={18} color="#FF6D6D" />
-                <Text className="ml-1">Coat Color: {pet?.coatColor}</Text>
-              </Text>
-
-              <Text className="text-base text-gray-700 flex-row items-center">
+                <Text className="ml-2 text-base text-gray-700">
+                  Coat Color: {pet?.coatColor}
+                </Text>
+              </View>
+              <View className="flex-row items-center">
                 <Ionicons
                   name="shield-checkmark-outline"
                   size={18}
                   color="#FF6D6D"
                 />
-                <Text className="ml-1">
+                <Text className="ml-2 text-base text-gray-700">
                   Vaccinated: {pet?.vaccinated ? 'Yes' : 'No'}
                 </Text>
-              </Text>
+              </View>
             </View>
 
             <Text className="text-base text-gray-800 italic bg-blue-50/60 p-4 mt-4 rounded-lg shadow-sm">
@@ -184,6 +192,7 @@ const PetDetailScreen = () => {
           </View>
         )}
 
+        {/* Adoption and Donation Buttons */}
         <View className="mt-5">
           <TouchableOpacity
             onPress={handleRequestAdoption}
