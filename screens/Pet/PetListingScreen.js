@@ -2,7 +2,7 @@ import PetSearchBar from '@/components/Search/SearchBar';
 import { useDeletePet, useGetAllPets } from '@/hooks/Pet';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -14,7 +14,6 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
-import { useSelector } from 'react-redux';
 
 const PetListingScreen = () => {
   const navigation = useNavigation();
@@ -24,7 +23,12 @@ const PetListingScreen = () => {
 
   const { pets, isLoading, isError, error } = useGetAllPets(searchParams);
   const { mutate: deletePet } = useDeletePet();
-  const { profile } = useSelector((state) => state.userProfile);
+
+  useEffect(() => {
+    if (isLoading) console.log('Fetching pets...');
+    if (isError) console.error('Error fetching pets:', error);
+    if (pets) console.log('Fetched pets:', pets);
+  }, [isLoading, isError, pets]);
 
   const handleDelete = (petId) => {
     Alert.alert('Delete Pet', 'Are you sure you want to delete this pet?', [
@@ -35,7 +39,7 @@ const PetListingScreen = () => {
         onPress: () => {
           deletePet(petId, {
             onSuccess: () => {
-              // console.log('Pet deleted successfully:', petId);
+              console.log('Pet deleted successfully:', petId);
             },
             onError: (error) => {
               console.error('Error deleting pet:', error);
@@ -66,7 +70,7 @@ const PetListingScreen = () => {
   };
 
   return (
-    <View className="flex-1 p-4 bg-slate-150 bg-indigo-100">
+    <View className="flex-1 p-4 bg-slate-150">
       <PetSearchBar onSearch={handleSearch} />
 
       {isLoading ? (
@@ -91,22 +95,19 @@ const PetListingScreen = () => {
         </View>
       ) : (
         <FlatList
-          className="mt-4"
+          className="mt-10"
           data={pets}
           keyExtractor={(item, index) => item._id || index.toString()}
           renderItem={({ item }) => (
             <TouchableOpacity
               onPress={() => handleDetail(item._id, getImageUrl(item))}
               className="bg-white my-4 rounded-xl shadow-lg overflow-hidden"
-              className="bg-white my-4 rounded-xl shadow-lg overflow-hidden"
             >
-              <View className="relative w-full h-56 rounded-t-xl overflow-hidden">
-              <View className="relative w-full h-56 overflow-hidden">
+              <View className="relative w-full h-56 rounded-t-xl overflow-hidden ">
                 <Image
                   source={{ uri: getImageUrl(item) }}
                   className="w-full h-full object-cover"
                   style={{
-                    borderRadius: 12,
                     borderColor: '#FFFFFF',
                   }}
                 />
@@ -135,7 +136,6 @@ const PetListingScreen = () => {
                   </Text>
                 </View>
 
-
                 <View className="flex-row items-center mb-2">
                   <Ionicons name="medkit-outline" size={18} color="#FF6D6D" />
                   <Text className="text-lg text-gray-600 ml-2">
@@ -143,16 +143,6 @@ const PetListingScreen = () => {
                   </Text>
                 </View>
               </View>
-              <TouchableOpacity
-                onPress={() => {
-                  setSelectedPet(item);
-                  setModalVisible(true);
-                }}
-                className="absolute top-4 right-2 bg-white rounded-full p-2 shadow-md"
-                style={{ display: profile?.role === 'admin' ? 'flex' : 'none' }}
-              >
-                <Ionicons name="ellipsis-vertical" size={24} color="#000" />
-              </TouchableOpacity>
             </TouchableOpacity>
           )}
         />
