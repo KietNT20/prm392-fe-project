@@ -13,16 +13,14 @@ import { Button, Input } from 'react-native-elements';
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
   const { login, isLoading } = useLogin();
-
   const handleLogin = async () => {
     if (!email || !password) {
       Alert.alert('Lỗi', 'Vui lòng nhập email và mật khẩu');
       return;
     }
     try {
-      console.log('Attempting login with:', { email, password });
+      // console.log('Attempting login with:', { email, password });
       await login({
         identifier: email.trim(),
         password: password.trim(),

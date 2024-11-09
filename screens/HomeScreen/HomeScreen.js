@@ -116,10 +116,10 @@ const HomeScreen = () => {
 
     <ScrollView className="flex-1 bg-gradient-to-b from-gray-100 via-white to-gray-50">
       {/* Header Image */}
-      <View className="relative w-full h-48 md:h-64 shadow-lg">
+      <View className="relative h-64">
         <Image
           source={require('../../assets/images/Header_Information.png')}
-          className="w-full h-full object-cover rounded-b-3xl"
+          className="w-full h-full"
         />
         <View className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent rounded-b-3xl" />
         <Text className="absolute bottom-6 left-6 text-white font-extrabold text-3xl md:text-4xl shadow-lg tracking-wide">
@@ -132,15 +132,15 @@ const HomeScreen = () => {
         <Text className="text-5xl md:text-6xl font-black text-indigo-900 mb-6 tracking-wide text-center uppercase">
           Giới thiệu
         </Text>
-        <Text className="text-gray-700 text-base md:text-lg leading-relaxed mb-6 text-justify">
-          Hopeful Tails Trust được xây dựng dựa trên tiêu chí cổng thông tin
-          khổng lồ và hoàn toàn miễn phí về vấn đề xung quanh động vật, đặc biệt
-          là thú cưng, cụ thể là vấn đề thú cưng bị bỏ rơi, các thực phẩm dinh
-          dưỡng dành cho thú cưng, cách chăm sóc và điều trị bệnh cho chó mèo,
-          và nhiều hơn thế nữa. Tất cả những thông tin tại Hopeful Tails Trust
-          được sưu tầm và tham khảo từ nhiều nguồn khác nhau có chọn lọc, cùng
-          với kinh nghiệm thực tế của chúng tôi để cung cấp thông tin chính xác
-          và hữu ích nhất cho mọi người.
+        <Text className="text-gray-700 text-base leading-relaxed mb-6">
+          PawFund được xây dựng dựa trên tiêu chí cổng thông tin khổng lồ và
+          hoàn toàn miễn phí về vấn đề xung quanh động vật, đặc biệt là thú
+          cưng, cụ thể là vấn đề thú cưng bị bỏ rơi, các thực phẩm dinh dưỡng
+          dành cho thú cưng, cách chăm sóc và điều trị bệnh cho chó mèo,... Tất
+          cả những thông tin tại Hopeful Tails Trust được sưu tầm và tham khảo
+          từ nhiều nguồn khác nhau có chọn lọc, bên cạnh đó còn là trải nghiệm
+          thực tế của chúng tôi trong quá trình nuôi thú cưng để đem đến cho mọi
+          người những thông tin chính xác và hữu ích nhất.
         </Text>
 
         {/* Featured Image */}

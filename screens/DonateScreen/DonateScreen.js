@@ -1,18 +1,16 @@
-
-import React, { useState } from 'react';
+import { Ionicons } from '@expo/vector-icons';
+import { useState } from 'react';
 import {
-  View,
-  Text,
-  ImageBackground,
   Alert,
-  ScrollView,
-  TouchableOpacity,
   Animated,
+  ImageBackground,
+  ScrollView,
+  Text,
+  View,
 } from 'react-native';
 import { Button, Input } from 'react-native-elements';
-import { Ionicons } from '@expo/vector-icons';
 
-const DonationScreen = ({ navigation }) => {
+const DonateScreen = ({ navigation }) => {
   const [amount, setAmount] = useState('');
   const [buttonScale] = useState(new Animated.Value(1));
 
@@ -53,13 +51,6 @@ const DonationScreen = ({ navigation }) => {
         }}
         keyboardShouldPersistTaps="handled"
       >
-        <TouchableOpacity
-          style={{ position: 'absolute', top: 50, left: 20, zIndex: 1 }}
-          onPress={() => navigation.goBack()}
-        >
-          <Ionicons name="arrow-back" size={30} color="white" />
-        </TouchableOpacity>
-
         <View
           style={{
             backgroundColor: 'rgba(255, 255, 255, 0.1)',
@@ -145,4 +136,4 @@ const DonationScreen = ({ navigation }) => {
   );
 };
 
-export default DonationScreen;
+export default DonateScreen;

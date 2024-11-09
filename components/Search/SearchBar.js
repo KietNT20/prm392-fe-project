@@ -1,16 +1,16 @@
+import { useGetAllPets } from '@/hooks/Pet';
+import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
 import {
+  ActivityIndicator,
+  FlatList,
+  Modal,
+  Text,
   TextInput,
   TouchableOpacity,
   View,
-  Modal,
-  Text,
-  FlatList,
-  ActivityIndicator,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { useNavigation } from '@react-navigation/native';
-import { useGetAllPets } from '@/hooks/Pet';
 
 export default function PetSearchBar({ onSearch }) {
   const navigation = useNavigation();
@@ -68,7 +68,7 @@ export default function PetSearchBar({ onSearch }) {
   };
 
   return (
-    <View style={{ padding: 16, backgroundColor: '#e0e7ff' }}>
+    <View style={{ padding: 0, backgroundColor: '#e0e7ff' }}>
       {/* Main Search Bar */}
       <View
         style={{
@@ -105,7 +105,7 @@ export default function PetSearchBar({ onSearch }) {
         <FlatList
           data={pets}
           keyExtractor={(item, index) =>
-            item.id ? item.id.toString() : index.toString()
+            item._id ? item._id.toString() : index.toString()
           }
           renderItem={({ item }) => (
             <TouchableOpacity

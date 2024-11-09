@@ -1,21 +1,20 @@
-
+import { useAddPet, useUploadImage } from '@/hooks/Pet';
+import * as ImagePicker from 'expo-image-picker';
 import React, { useState, useEffect } from 'react';
 import {
-  View,
+  Alert,
   Button,
+  FlatList,
+  Image,
+  Modal,
+  ScrollView,
+  Switch,
   Text,
   TextInput,
-  Switch,
-  Alert,
-  Image,
   TouchableOpacity,
-  Modal,
   TouchableWithoutFeedback,
-  FlatList,
-  ScrollView,
+  View,
 } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
-import { useUploadImage, useAddPet } from '@/hooks/Pet';
 
 const AddPetForm = () => {
   const [imageUri, setImageUri] = useState(null);
@@ -273,4 +272,3 @@ const AddPetForm = () => {
 };
 
 export default AddPetForm;
-

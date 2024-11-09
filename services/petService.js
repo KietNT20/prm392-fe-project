@@ -27,6 +27,9 @@ export const petServices = {
       },
     });
   },
+  deleteMedia(id) {
+    return axiosInstance.delete(`${API.DELETE_MEDIA}${id}`);
+  },
   getPetsByQuery(queryParams) {
     // Convert queryParams object to query string
     const queryString = Object.keys(queryParams)

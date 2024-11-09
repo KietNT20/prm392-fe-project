@@ -1,23 +1,24 @@
-import React, { useState } from 'react';
 import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  Modal,
-  TouchableWithoutFeedback,
-  Alert,
-  ActivityIndicator,
-  TextInput,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import {
-  useGetAllNews,
-  useDeleteNew,
-  useUpdateNew,
   useAddNew,
+  useDeleteNew,
+  useGetAllNews,
+  useQueryNew,
+  useUpdateNew,
 } from '@/hooks/New';
-import { useQueryNew } from '@/hooks/New';
+import { Ionicons } from '@expo/vector-icons';
+import { useState } from 'react';
+import {
+  ActivityIndicator,
+  Alert,
+  FlatList,
+  Modal,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
+import { useSelector } from 'react-redux';
 
 const NewListingScreen = ({ navigation }) => {
   const [selectedNews, setSelectedNews] = useState(null);
@@ -39,6 +40,7 @@ const NewListingScreen = ({ navigation }) => {
   const { mutate: deleteNew } = useDeleteNew();
   const { mutate: updateNew } = useUpdateNew(); // Hook cập nhật mới
   const { mutate: addNew } = useAddNew();
+  const { profile } = useSelector((state) => state.userProfile);
 
   const handleAddClose = () => {
     setAddNews({ name: '', views: '' }); // Reset form
@@ -68,7 +70,7 @@ const NewListingScreen = ({ navigation }) => {
           onPress: () => {
             deleteNew(selectedNews._id, {
               onSuccess: () => {
-                console.log(`News deleted: ${selectedNews.name}`);
+                // console.log(`News deleted: ${selectedNews.name}`);
                 setModalVisible(false);
               },
               onError: (error) => {
@@ -80,6 +82,7 @@ const NewListingScreen = ({ navigation }) => {
       ],
     );
   };
+
   const handleEdit = () => {
     if (!selectedNews) return;
 
@@ -92,7 +95,7 @@ const NewListingScreen = ({ navigation }) => {
 
     updateNew(updatedNews, {
       onSuccess: () => {
-        console.log(`News updated: ${updatedNews.name}`);
+        // console.log(`News updated: ${updatedNews.name}`);
         setEditModalVisible(false);
         setModalVisible(false);
         Alert.alert('Success', 'News update successfully!', [{ text: 'OK' }]);
@@ -101,7 +104,7 @@ const NewListingScreen = ({ navigation }) => {
         console.error('Error updating news:', error);
       },
     });
-    console.log('data', updatedNews);
+    // console.log('data', updatedNews);
   };
   const handleAdd = () => {
     const newNews = {
@@ -112,7 +115,7 @@ const NewListingScreen = ({ navigation }) => {
 
     addNew(newNews, {
       onSuccess: () => {
-        console.log(`News added: ${addNews.name}`);
+        // console.log(`News added: ${addNews.name}`);
         setAddModalVisible(false);
         setAddNews({ name: '', views: '' }); // Reset form
         Alert.alert('Success', 'News added successfully!', [{ text: 'OK' }]);
@@ -145,16 +148,17 @@ const NewListingScreen = ({ navigation }) => {
   return (
     <View className="flex-1 bg-gray-100 p-4">
       <View className="flex-row justify-between items-center mb-4">
-        <Text className="text-2xl font-semibold text-indigo-800">
-          News List
-        </Text>
+        <Text className="text-xl font-bold">News List</Text>
         <TouchableOpacity onPress={() => setSearchModalVisible(true)}>
           <Ionicons name="search" size={24} color="#3b82f6" />
         </TouchableOpacity>
       </View>
       <TouchableOpacity
         onPress={() => setAddModalVisible(true)}
-        className="bg-blue-500 p-3 rounded-lg mb-4 shadow-md"
+        className="bg-blue-500 p-2 rounded m-2"
+        style={{
+          display: profile.role === 'admin' ? 'flex' : 'none',
+        }}
       >
         <Text className="text-white text-center font-semibold">Add News</Text>
       </TouchableOpacity>
@@ -208,16 +212,14 @@ const NewListingScreen = ({ navigation }) => {
                   </Text>
                   <Text className="text-blue-600">👁️</Text>
                 </TouchableOpacity>
-
-                {/* Delete News */}
                 <TouchableOpacity
                   onPress={handleDelete}
-                  className="flex flex-row items-center justify-center py-3 mb-3 rounded-xl bg-red-100 hover:bg-red-200"
+                  className="my-2"
+                  style={{
+                    display: profile.role === 'admin' ? 'flex' : 'none',
+                  }}
                 >
-                  <Text className="text-lg font-semibold text-red-500 mr-2">
-                    Delete News
-                  </Text>
-                  <Text className="text-red-500">🗑️</Text>
+                  <Text className="text-lg text-black">Delete News</Text>
                 </TouchableOpacity>
 
                 {/* Edit News */}
@@ -230,7 +232,10 @@ const NewListingScreen = ({ navigation }) => {
                     setEditModalVisible(true);
                     setModalVisible(false);
                   }}
-                  className="flex flex-row items-center justify-center py-3 rounded-xl bg-green-100 hover:bg-green-200"
+                  className="my-2"
+                  style={{
+                    display: profile.role === 'admin' ? 'flex' : 'none',
+                  }}
                 >
                   <Text className="text-lg font-semibold text-green-600 mr-2">
                     Edit News

@@ -1,8 +1,11 @@
+import { useCreateAdoptionRequest } from '@/hooks/AdoptionRequest';
+import { useAddCartPet } from '@/hooks/CartPet';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useRoute } from '@react-navigation/native';
 import { Button, Card, Input } from '@rneui/themed';
 import { useState } from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
+import { useSelector } from 'react-redux';
 
 const AdoptPetScreen = () => {
   const [formData, setFormData] = useState({
@@ -19,7 +22,17 @@ const AdoptPetScreen = () => {
     address: '',
   });
 
-  const navigation = useNavigation();
+  const { createAdoptionReq } = useCreateAdoptionRequest();
+  const route = useRoute();
+  const { profile } = useSelector((state) => state.userProfile);
+  const { addCartPet } = useAddCartPet();
+  // console.log('User Profile:', profile);
+  const { petId } = route.params;
+  // console.log('Pet ID:', petId);
+
+  const handleAddToCart = () => {
+    addCartPet({ petId: petId });
+  };
 
   const validateForm = () => {
     let isValid = true;
@@ -32,10 +45,10 @@ const AdoptPetScreen = () => {
 
     // Validate CCCD (12 digits)
     if (!formData.cccd) {
-      newErrors.cccd = 'CCCD is required';
+      newErrors.cccd = 'IC is required';
       isValid = false;
     } else if (!/^\d{12}$/.test(formData.cccd)) {
-      newErrors.cccd = 'CCCD must be exactly 12 digits';
+      newErrors.cccd = 'IC must be exactly 12 digits';
       isValid = false;
     }
 
@@ -66,8 +79,17 @@ const AdoptPetScreen = () => {
 
   const handleSubmit = () => {
     if (validateForm()) {
-      console.log('Form submitted:', formData);
+      // console.log('Form submitted:', formData);
       // Add your submission logic here
+      createAdoptionReq({
+        petId: petId,
+        userId: profile.id,
+        name: formData.name,
+        address: formData.address,
+        phoneNumber: formData.phoneNumber,
+        cccd: formData.cccd,
+      });
+      handleAddToCart();
     }
   };
 
@@ -76,7 +98,7 @@ const AdoptPetScreen = () => {
       <Card containerStyle={styles.card}>
         <Card.Title style={styles.title}>Pet Adoption Application</Card.Title>
         <Input
-          placeholder="CCCD"
+          placeholder="IC Number"
           leftIcon={<Ionicons name="card" size={24} color="#86939e" />}
           value={formData.cccd}
           onChangeText={(text) => setFormData({ ...formData, cccd: text })}
