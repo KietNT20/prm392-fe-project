@@ -68,7 +68,7 @@ export default function PetSearchBar({ onSearch }) {
   };
 
   return (
-    <View style={{ padding: 16, backgroundColor: '#e0e7ff' }}>
+    <View style={{ padding: 0, backgroundColor: '#e0e7ff' }}>
       {/* Main Search Bar */}
       <View
         style={{

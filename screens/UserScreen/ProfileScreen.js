@@ -82,6 +82,33 @@ const ProfileScreen = () => {
     );
   };
 
+  const handleUpdatePassword = () => {
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      Alert.alert('Error', 'New passwords do not match');
+      return;
+    }
+
+    updateUserMutation.mutate(
+      {
+        userId: profile.id,
+        updatedUserData: { password: passwordData.newPassword },
+      },
+      {
+        onSuccess: () => {
+          Alert.alert('Success', 'Password updated successfully');
+          setPasswordData({
+            oldPassword: '',
+            newPassword: '',
+            confirmPassword: '',
+          });
+        },
+        onError: (error) => {
+          Alert.alert('Error', error.message || 'Failed to update password');
+        },
+      },
+    );
+  };
+
   const togglePasswordVisibility = (field) => {
     setPasswordVisible((prevState) => ({
       ...prevState,
@@ -292,7 +319,7 @@ const ProfileScreen = () => {
           {/* Reset Password Button */}
           <TouchableOpacity
             className="bg-indigo-700 p-4 rounded-lg mt-3"
-            onPress={handleUpdateUserInfo}
+            onPress={handleUpdatePassword}
           >
             <Text className="text-white font-bold text-center">
               Reset Password

@@ -1,4 +1,3 @@
-
 import PetSearchBar from '@/components/Search/SearchBar';
 import { useDeletePet, useGetAllPets } from '@/hooks/Pet';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
@@ -15,6 +14,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
+import { useSelector } from 'react-redux';
 
 const PetListingScreen = () => {
   const navigation = useNavigation();
@@ -24,6 +24,7 @@ const PetListingScreen = () => {
 
   const { pets, isLoading, isError, error } = useGetAllPets(searchParams);
   const { mutate: deletePet } = useDeletePet();
+  const { profile } = useSelector((state) => state.userProfile);
 
   const handleDelete = (petId) => {
     Alert.alert('Delete Pet', 'Are you sure you want to delete this pet?', [
@@ -65,7 +66,7 @@ const PetListingScreen = () => {
   };
 
   return (
-    <View className="flex-1 p-4 bg-slate-150">
+    <View className="flex-1 p-4 bg-slate-150 bg-indigo-100">
       <PetSearchBar onSearch={handleSearch} />
 
       {isLoading ? (
@@ -90,23 +91,18 @@ const PetListingScreen = () => {
         </View>
       ) : (
         <FlatList
-          className="mt-10"
+          className="mt-4"
           data={pets}
           keyExtractor={(item, index) => item._id || index.toString()}
           renderItem={({ item }) => (
             <TouchableOpacity
               onPress={() => handleDetail(item._id, getImageUrl(item))}
-              className="bg-white my-4 rounded-xl shadow-lg overflow-hidden" 
+              className="bg-white my-4 rounded-xl shadow-lg overflow-hidden"
             >
-              <View className="relative w-full h-56 rounded-t-xl overflow-hidden mt-2">
+              <View className="relative w-full h-56 overflow-hidden">
                 <Image
                   source={{ uri: getImageUrl(item) }}
                   className="w-full h-full object-cover"
-                  style={{
-                    borderRadius: 16, 
-                    borderWidth: 2,
-                    borderColor: '#FFFFFF', 
-                  }}
                 />
                 <View className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent rounded-t-xl" />
                 <Text className="absolute bottom-6 left-6 text-3xl font-extrabold text-white tracking-wide shadow-2xl">
@@ -133,7 +129,6 @@ const PetListingScreen = () => {
                   </Text>
                 </View>
 
- 
                 <View className="flex-row items-center mb-2">
                   <Ionicons name="medkit-outline" size={18} color="#FF6D6D" />
                   <Text className="text-lg text-gray-600 ml-2">
@@ -141,11 +136,20 @@ const PetListingScreen = () => {
                   </Text>
                 </View>
               </View>
+              <TouchableOpacity
+                onPress={() => {
+                  setSelectedPet(item);
+                  setModalVisible(true);
+                }}
+                className="absolute top-4 right-2 bg-white rounded-full p-2 shadow-md"
+                style={{ display: profile?.role === 'admin' ? 'flex' : 'none' }}
+              >
+                <Ionicons name="ellipsis-vertical" size={24} color="#000" />
+              </TouchableOpacity>
             </TouchableOpacity>
           )}
         />
       )}
-
 
       {selectedPet && (
         <Modal

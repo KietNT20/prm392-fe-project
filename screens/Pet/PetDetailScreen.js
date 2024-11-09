@@ -128,7 +128,7 @@ const PetDetailScreen = () => {
           </View>
         )}
 
-        <View className="relative">
+        <View className="relative mt-10">
           <Image
             source={{ uri: imageUrl }}
             className="w-full h-64 rounded-xl mb-4 shadow-lg"
@@ -221,33 +221,50 @@ const PetDetailScreen = () => {
               </Text>
             </View>
 
-            <View className="space-y-2">
-              <Text className="text-base text-gray-700 flex-row items-center">
-                <Ionicons name="time-outline" size={18} color="#FF6D6D" />
-                <Text className="ml-1">Age: {pet?.age} years</Text>
-              </Text>
-
-              <Text className="text-base text-gray-700 flex-row items-center">
+            <View className="">
+              <View className="text-base text-gray-700 flex-row items-center">
                 <Ionicons
+                  style={{ marginRight: 2 }}
+                  name="time-outline"
+                  size={18}
+                  color="#FF6D6D"
+                />
+                <Text className="ml-1">Age: {pet?.age} years</Text>
+              </View>
+
+              <View className="text-base text-gray-700 flex-row items-center">
+                <Ionicons
+                  style={{ marginRight: 2 }}
                   name="male-female-outline"
                   size={18}
                   color="#FF6D6D"
                 />
                 <Text className="ml-1">Sex: {pet?.sex}</Text>
-              </Text>
+              </View>
 
-              <Text className="text-base text-gray-700 flex-row items-center">
-                <Ionicons name="paw-outline" size={18} color="#FF6D6D" />
-                <Text className="ml-1">Species: {pet?.species}</Text>
-              </Text>
-
-              <Text className="text-base text-gray-700 flex-row items-center">
-                <MaterialIcons name="color-lens" size={18} color="#FF6D6D" />
-                <Text className="ml-1">Coat Color: {pet?.coatColor}</Text>
-              </Text>
-
-              <Text className="text-base text-gray-700 flex-row items-center">
+              <View className="text-base text-gray-700 flex-row items-center">
                 <Ionicons
+                  style={{ marginRight: 2 }}
+                  name="paw-outline"
+                  size={18}
+                  color="#FF6D6D"
+                />
+                <Text className="ml-1">Species: {pet?.species}</Text>
+              </View>
+
+              <View className="text-base text-gray-700 flex-row items-center">
+                <MaterialIcons
+                  style={{ marginRight: 2 }}
+                  name="color-lens"
+                  size={18}
+                  color="#FF6D6D"
+                />
+                <Text className="ml-1">Coat Color: {pet?.coatColor}</Text>
+              </View>
+
+              <View className="text-base text-gray-700 flex-row items-center">
+                <Ionicons
+                  style={{ marginRight: 2 }}
                   name="shield-checkmark-outline"
                   size={18}
                   color="#FF6D6D"
@@ -255,7 +272,7 @@ const PetDetailScreen = () => {
                 <Text className="ml-1">
                   Vaccinated: {pet?.vaccinated ? 'Yes' : 'No'}
                 </Text>
-              </Text>
+              </View>
             </View>
 
             <Text className="text-base text-gray-800 italic bg-blue-50/60 p-4 mt-4 rounded-lg shadow-sm">

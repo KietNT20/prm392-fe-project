@@ -131,10 +131,10 @@ const HomeScreen = () => {
   return (
     <ScrollView className="flex-1 bg-gray-100">
       {/* Header Image */}
-      <View className="relative w-full h-64">
+      <View className="relative h-64">
         <Image
           source={require('../../assets/images/Header_Information.png')}
-          className="w-full h-full object-cover"
+          className="w-full h-full"
         />
         <View className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
         <Text className="absolute bottom-5 left-5 text-white font-bold text-3xl shadow-lg">
