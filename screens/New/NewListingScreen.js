@@ -128,17 +128,19 @@ const NewListingScreen = ({ navigation }) => {
 
   if (isLoading) {
     return (
-      <View className="flex-1 justify-center items-center">
-        <ActivityIndicator size="large" color="#0000ff" />
-        <Text>Loading news...</Text>
+      <View className="flex-1 justify-center items-center bg-gray-100">
+        <ActivityIndicator size="large" color="#3b82f6" />
+        <Text className="text-gray-600 text-lg">Loading news...</Text>
       </View>
     );
   }
 
   if (isError) {
     return (
-      <View className="flex-1 justify-center items-center">
-        <Text>Error loading news: {error.message}</Text>
+      <View className="flex-1 justify-center items-center bg-gray-100">
+        <Text className="text-red-500 text-lg">
+          Error loading news: {error.message}
+        </Text>
       </View>
     );
   }
@@ -148,7 +150,7 @@ const NewListingScreen = ({ navigation }) => {
       <View className="flex-row justify-between items-center mb-4">
         <Text className="text-xl font-bold">News List</Text>
         <TouchableOpacity onPress={() => setSearchModalVisible(true)}>
-          <Ionicons name="search" size={24} color="#000" />
+          <Ionicons name="search" size={24} color="#3b82f6" />
         </TouchableOpacity>
       </View>
       <TouchableOpacity
@@ -158,7 +160,7 @@ const NewListingScreen = ({ navigation }) => {
           display: profile.role === 'admin' ? 'flex' : 'none',
         }}
       >
-        <Text className="text-white text-center">Add News</Text>
+        <Text className="text-white text-center font-semibold">Add News</Text>
       </TouchableOpacity>
       <FlatList
         data={news}
@@ -169,7 +171,7 @@ const NewListingScreen = ({ navigation }) => {
               setSelectedNews(item);
               setModalVisible(true);
             }}
-            className="bg-white shadow-md rounded-lg p-4 m-2 flex flex-row items-center"
+            className="bg-white shadow-md rounded-lg p-4 m-2 flex flex-row items-center border border-gray-200"
           >
             <View className="ml-4 flex-1">
               <Text className="text-lg font-bold text-indigo-700">
@@ -193,20 +195,22 @@ const NewListingScreen = ({ navigation }) => {
           onRequestClose={() => setModalVisible(false)}
         >
           <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
-            <View
-              style={{
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: 'rgba(0, 0, 0, 0.5)',
-              }}
-            >
-              <View className="bg-white p-6 rounded-lg w-4/5">
+            <View className="flex-1 justify-center items-center bg-black/60 backdrop-blur-sm">
+              <View className="bg-gradient-to-r from-purple-50 via-white to-blue-50 p-8 rounded-3xl w-4/5 shadow-2xl shadow-gray-800 border border-gray-200">
+                {/* Title */}
+                <Text className="text-2xl font-bold text-gray-800 text-center mb-6">
+                  News Options
+                </Text>
+
+                {/* View Details */}
                 <TouchableOpacity
                   onPress={() => handleDetail(selectedNews._id)}
-                  className="my-2"
+                  className="flex flex-row items-center justify-center py-3 mb-3 rounded-xl bg-blue-100 hover:bg-blue-200"
                 >
-                  <Text className="text-lg text-black">View Details</Text>
+                  <Text className="text-lg font-semibold text-blue-600 mr-2">
+                    View Details
+                  </Text>
+                  <Text className="text-blue-600">👁️</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={handleDelete}
@@ -217,6 +221,8 @@ const NewListingScreen = ({ navigation }) => {
                 >
                   <Text className="text-lg text-black">Delete News</Text>
                 </TouchableOpacity>
+
+                {/* Edit News */}
                 <TouchableOpacity
                   onPress={() => {
                     setEditedNews({
@@ -231,7 +237,10 @@ const NewListingScreen = ({ navigation }) => {
                     display: profile.role === 'admin' ? 'flex' : 'none',
                   }}
                 >
-                  <Text className="text-lg text-black">Edit News</Text>
+                  <Text className="text-lg font-semibold text-green-600 mr-2">
+                    Edit News
+                  </Text>
+                  <Text className="text-green-600">✏️</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -247,48 +256,65 @@ const NewListingScreen = ({ navigation }) => {
         onRequestClose={() => setSearchModalVisible(false)}
       >
         <TouchableWithoutFeedback onPress={() => setSearchModalVisible(false)}>
-          <View
-            style={{
-              flex: 1,
-              justifyContent: 'center',
-              alignItems: 'center',
-              backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            }}
-          >
-            <View className="bg-white p-6 rounded-lg w-4/5">
-              <TextInput
-                placeholder="Search News..."
-                value={searchTerm}
-                onChangeText={setSearchTerm}
-                className="border border-gray-300 rounded p-2 mb-4"
-              />
+          <View className="flex-1 justify-center items-center bg-black/60 backdrop-blur-sm">
+            <View className="bg-gradient-to-br from-gray-100 to-gray-50 p-6 rounded-3xl w-4/5 shadow-xl shadow-gray-700 border border-gray-300">
+              {/* Title */}
+              <Text className="text-2xl font-bold text-gray-800 text-center mb-6">
+                🔍 Search News
+              </Text>
+
+              {/* Search Input */}
+              <View className="flex flex-row items-center border border-gray-300 rounded-lg p-3 mb-4 bg-slate-500">
+                <Text className="text-gray-800 mr-2"></Text>
+                <TextInput
+                  placeholder="Search News..."
+                  value={searchTerm}
+                  onChangeText={setSearchTerm}
+                  className="flex-1 text-lg text-gray-700"
+                />
+              </View>
+
+              {/* Search Button */}
               <TouchableOpacity
                 onPress={() => setSearchTerm('')}
-                className="bg-blue-500 p-2 rounded"
+                className="bg-blue-500 py-3 rounded-lg mb-2 flex flex-row justify-center items-center"
               >
-                <Text className="text-white text-center">Search</Text>
+                <Text className="text-white text-lg font-semibold mr-2">
+                  Search
+                </Text>
+                <Text className="text-white"></Text>
               </TouchableOpacity>
+
+              {/* Cancel Button */}
               <TouchableOpacity
                 onPress={() => setSearchModalVisible(false)}
-                className="mt-4"
+                className="mt-2"
               >
-                <Text className="text-center text-blue-500">Cancel</Text>
+                <Text className="text-center text-blue-600 font-semibold">
+                  Cancel ❌
+                </Text>
               </TouchableOpacity>
 
-              {/* Hiển thị kết quả tìm kiếm */}
+              {/* Searching Indicator */}
               {isSearching && (
-                <View className="mt-4">
+                <View className="mt-4 flex items-center">
                   <ActivityIndicator size="large" color="#0000ff" />
-                  <Text>Searching for: {searchTerm}</Text>
+                  <Text className="text-gray-500 mt-2">
+                    Searching for: {searchTerm}
+                  </Text>
                 </View>
               )}
 
+              {/* Error Message */}
               {isSearchError && (
                 <View className="mt-4">
-                  <Text>Error fetching search results.</Text>
+                  <Text className="text-center text-red-500">
+                    ⚠️ Error fetching search results.
+                  </Text>
                 </View>
               )}
 
+              {/* Search Results */}
               {searchResults && searchResults.length > 0 ? (
                 <FlatList
                   data={searchResults}
@@ -299,9 +325,10 @@ const NewListingScreen = ({ navigation }) => {
                         setSelectedNews(item);
                         setModalVisible(true);
                       }}
-                      className="bg-white shadow-md rounded-lg p-4 m-2"
+                      className="bg-gray-100 shadow-sm rounded-lg p-4 m-2 flex-row items-center hover:bg-gray-200"
                     >
-                      <Text className="text-lg font-bold text-indigo-700">
+                      <Text className="text-indigo-600 mr-2">📰</Text>
+                      <Text className="text-lg font-semibold text-indigo-700">
                         {item.name}
                       </Text>
                     </TouchableOpacity>
@@ -309,13 +336,16 @@ const NewListingScreen = ({ navigation }) => {
                 />
               ) : (
                 <View className="mt-4">
-                  <Text className="text-center">No results found</Text>
+                  <Text className="text-center text-gray-500">
+                    No results found 🙁
+                  </Text>
                 </View>
               )}
             </View>
           </View>
         </TouchableWithoutFeedback>
       </Modal>
+
       {/* // edit modal */}
       <Modal
         transparent={true}
@@ -324,57 +354,68 @@ const NewListingScreen = ({ navigation }) => {
         onRequestClose={() => setEditModalVisible(false)}
       >
         <TouchableWithoutFeedback onPress={() => setEditModalVisible(false)}>
-          <View
-            style={{
-              flex: 1,
-              justifyContent: 'center',
-              alignItems: 'center',
-              backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            }}
-          >
-            <View className="bg-white p-6 rounded-lg w-4/5">
-              <Text className="text-lg font-bold text-center mb-4">
-                Update News
+          <View className="flex-1 justify-center items-center bg-black/80 backdrop-blur-lg">
+            <View className="bg-gradient-to-br from-blue-500 to-indigo-600 p-12 rounded-3xl w-4/5 shadow-3xl shadow-gray-900 border border-gray-200">
+              {/* Title */}
+              <Text className="text-3xl font-extrabold text-white text-center mb-8">
+                ✏️ Update News
               </Text>
-              <Text className="text-black mb-1 font-bold">Title Name</Text>
+
+              {/* Title Name */}
+              <Text className="text-2xl font-semibold text-white mb-4">
+                Title Name
+              </Text>
               <TextInput
-                placeholder="News Name"
+                placeholder="Enter News Title"
                 value={editedNews.name}
                 onChangeText={(text) =>
                   setEditedNews({ ...editedNews, name: text })
                 }
-                className="border border-gray-300 rounded p-2 mb-4"
+                className="border-2 border-blue-300 rounded-lg p-4 mb-6 text-lg text-white bg-blue-400 focus:ring-4 focus:ring-blue-500 focus:border-transparent placeholder:text-gray-300"
               />
-              <Text className="text-black mb-1 font-bold">Views</Text>
+
+              {/* Views */}
+              <Text className="text-2xl font-semibold text-white mb-4">
+                Views
+              </Text>
               <TextInput
-                placeholder="Views"
+                placeholder="Enter Views"
                 value={String(editedNews.views || '')}
                 onChangeText={(text) => {
                   const numericValue = Number(text);
                   setEditedNews({
                     ...editedNews,
                     views: isNaN(numericValue) ? 0 : numericValue,
-                  }); // Cập nhật nếu là số
+                  });
                 }}
-                className="border border-gray-300 rounded p-2 mb-4"
+                className="border-2 border-blue-300 rounded-lg p-4 mb-6 text-lg text-white bg-blue-400 focus:ring-4 focus:ring-blue-500 focus:border-transparent placeholder:text-gray-300"
                 keyboardType="numeric"
               />
+
+              {/* Update Button */}
               <TouchableOpacity
                 onPress={handleEdit}
-                className="bg-blue-500 p-2 rounded"
+                className="bg-blue-700 py-4 rounded-lg mb-4 flex justify-center items-center shadow-lg transform hover:scale-105 transition-all duration-300"
               >
-                <Text className="text-white text-center">Update News</Text>
+                <Text className="text-white text-xl font-semibold">
+                  Update News
+                </Text>
               </TouchableOpacity>
+
+              {/* Cancel Button */}
               <TouchableOpacity
                 onPress={() => setEditModalVisible(false)}
-                className="mt-4"
+                className="mt-6"
               >
-                <Text className="text-center text-blue-500">Cancel</Text>
+                <Text className="text-center text-blue-300 font-semibold text-lg hover:text-white transition-colors duration-300">
+                  Cancel ❌
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
         </TouchableWithoutFeedback>
       </Modal>
+
       {/* add modal */}
       <Modal
         transparent={true}
@@ -383,28 +424,28 @@ const NewListingScreen = ({ navigation }) => {
         onRequestClose={() => handleAddClose()}
       >
         <TouchableWithoutFeedback onPress={() => handleAddClose()}>
-          <View
-            style={{
-              flex: 1,
-              justifyContent: 'center',
-              alignItems: 'center',
-              backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            }}
-          >
-            <View className="bg-white p-6 rounded-lg w-4/5">
-              <Text className="text-lg font-bold text-center mb-4">
-                Add News
+          <View className="flex-1 justify-center items-center bg-black/70 backdrop-blur-lg">
+            <View className="bg-gradient-to-br from-blue-500 to-indigo-600 p-12 rounded-3xl w-4/5 shadow-xl shadow-gray-800 border border-gray-300">
+              {/* Title */}
+              <Text className="text-3xl font-extrabold text-white text-center mb-8">
+                ➕ Add News
               </Text>
-              <Text className="text-black mb-1 font-bold">Title Name</Text>
+
+              {/* Title Name */}
+              <Text className="text-xl font-medium text-white mb-4">
+                Title Name
+              </Text>
               <TextInput
-                placeholder="News Name"
+                placeholder="Enter News Title"
                 value={addNews.name}
                 onChangeText={(text) => setAddNews({ ...addNews, name: text })}
-                className="border border-gray-300 rounded p-2 mb-4"
+                className="border-2 border-blue-300 rounded-lg p-4 mb-6 text-lg text-white bg-blue-400 focus:ring-4 focus:ring-blue-500 focus:border-transparent placeholder:text-gray-300"
               />
-              <Text className="text-black mb-1 font-bold">Views</Text>
+
+              {/* Views */}
+              <Text className="text-xl font-medium text-white mb-4">Views</Text>
               <TextInput
-                placeholder="Views"
+                placeholder="Enter Views"
                 value={String(addNews.views || '')}
                 onChangeText={(text) => {
                   const numericValue = Number(text);
@@ -413,20 +454,28 @@ const NewListingScreen = ({ navigation }) => {
                     views: isNaN(numericValue) ? 0 : numericValue,
                   });
                 }}
-                className="border border-gray-300 rounded p-2 mb-4"
+                className="border-2 border-blue-300 rounded-lg p-4 mb-6 text-lg text-white bg-blue-400 focus:ring-4 focus:ring-blue-500 focus:border-transparent placeholder:text-gray-300"
                 keyboardType="numeric"
               />
+
+              {/* Add Button */}
               <TouchableOpacity
                 onPress={handleAdd}
-                className="bg-blue-500 p-2 rounded"
+                className="bg-blue-700 py-4 rounded-lg mb-4 flex justify-center items-center shadow-lg transform hover:scale-105 transition-all duration-300"
               >
-                <Text className="text-white text-center">Add News</Text>
+                <Text className="text-white text-xl font-semibold">
+                  Add News
+                </Text>
               </TouchableOpacity>
+
+              {/* Cancel Button */}
               <TouchableOpacity
                 onPress={() => handleAddClose()}
-                className="mt-4"
+                className="mt-6"
               >
-                <Text className="text-center text-blue-500">Cancel</Text>
+                <Text className="text-center text-blue-300 font-semibold text-lg hover:text-white transition-colors duration-300">
+                  Cancel ❌
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
